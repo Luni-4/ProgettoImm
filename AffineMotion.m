@@ -18,17 +18,28 @@
     
     %Suddivisione di immagini in regioni 20x20
     imgReg = Image20x20Subdivider(img1);
-    vReg = Image20x20Subdivider(v);
     uReg = Image20x20Subdivider(u);
+    vReg = Image20x20Subdivider(v);    
     
     affineRegX = cell(size(imgReg,1),size(imgReg,2));
     affineRegY = cell(size(imgReg,1),size(imgReg,2));
+    soglia=1; m=0;
     for i=1:size(imgReg,1)
         for j=1:size(imgReg,2)
-            [Hyi,Hxi]= affine(imgReg{i,j},uReg{i,j},vReg{i,j});
+            m=m+1;
+            [Hyi,Hxi]= affine(imgReg{i,j},u,v,size(imgReg,2),soglia,m);
             affineRegX{i,j}=Hxi;
             affineRegY{i,j}=Hyi;                     
         end
+    soglia=soglia+1;
     end   
     
-    
+    affineRegX1 = cell(size(imgReg,1),size(imgReg,2));
+    affineRegY1 = cell(size(imgReg,1),size(imgReg,2));   
+    for i=1:size(imgReg,1)
+        for j=1:size(imgReg,2)          
+            [Hyi,Hxi]= affine1(imgReg{i,j},uReg{i,j},vReg{i,j});
+            affineRegX1{i,j}=Hxi;
+            affineRegY1{i,j}=Hyi;                     
+        end
+    end     
