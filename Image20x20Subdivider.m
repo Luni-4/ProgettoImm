@@ -1,8 +1,5 @@
-function [ImageBlocks] = Image20x20Subdivider(img)
+function ImageBlocks = Image20x20Subdivider(img)
 %% Funzione per la suddivisione dell'immagine di partenza in blocchi 20x20
-
-img = rgb2gray(img);
-img = imresize(img,0.25);
 
 %Recupero dimensioni dell'immagine da analizzare
 [sizeX, sizeY] = size(img);
@@ -32,9 +29,8 @@ end
 X = dimXblock(:);
 Y = dimYblock(:);
 
-% %Suddivido l'immagine in blocchi 20x20, tranne un ipotetica ultima righa o
-% %colonna
+% Suddivido l'immagine in blocchi 20x20, tranne un ipotetica ultima righa o
+% colonna
 ImageBlocks = mat2cell(img,X,Y);
-
 
 end
