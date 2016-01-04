@@ -27,7 +27,7 @@
     for i=1:size(imgReg,1)
         for j=1:size(imgReg,2)
             m=m+1;
-            [Hyi,Hxi]= affine(imgReg{i,j},u,v,size(imgReg,2),soglia,m);
+            [Hxi, Hyi]= affine(imgReg{i,j},u,v,size(imgReg,2),soglia,m);
             affineRegX{i,j}=Hxi;
             affineRegY{i,j}=Hyi;                     
         end

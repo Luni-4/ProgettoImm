@@ -1,4 +1,4 @@
-function [Hyi,Hxi] = affine(imgReg,uReg,vReg,sy,soglia,conto)
+function [Hxi,Hyi] = affine(imgReg,uReg,vReg,sy,soglia,conto)
     sumr=0; 
     sumvx=0;
     sumvy=0;
@@ -14,7 +14,7 @@ function [Hyi,Hxi] = affine(imgReg,uReg,vReg,sy,soglia,conto)
             sumvy=sumvy+regressor*vReg(x+rig,y+col);            
         end
     end
-    Hxi=sumr\sumvx;
+    Hxi= sumr\sumvx;
     Hyi=sumr\sumvy;   
 end
 
