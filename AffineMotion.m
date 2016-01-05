@@ -13,7 +13,7 @@
     img2 = double(rgb2gray(img2));
     
     % Funzione che calcola flusso ottico tra 2 immagini e restituisce
-    % derivata lungo le x,y e tempo più vettori di flusso ottico
+    % derivata lungo le x,y e tempo piÃ¹ vettori di flusso ottico
     [Ix,Iy,It,u,v] = Optflow(img1,img2);
     
     %Suddivisione di immagini in regioni 20x20
@@ -34,8 +34,7 @@
     soglia=soglia+1;
     end   
     
-    %%Restituisco l'immagine suddivisa in regione con label
-    kmean_adattivo_test(u,v);
+ 
     
 %     affineRegX1 = cell(size(imgReg,1),size(imgReg,2));
 %     affineRegY1 = cell(size(imgReg,1),size(imgReg,2));   
