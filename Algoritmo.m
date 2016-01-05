@@ -1,100 +1,145 @@
-%% 1_Immagine di partenza
+%% ALGORITMO TRA I PRIMI DUE FRAME
 
-_____________________________________________
+	%% 
+	% Prima iterazione
+	%%
+	
+		%% 1_Immagine di partenza
 
-|	20x20	20x20	20x20	20x20	20x20	|
+		_____________________________________________
 
-|	20x20	20x20	20x20	20x20	20x20	|
+		|	20x20	20x20	20x20	20x20	20x20	|
 
-|	20x20	20x20	20x20	20x20	20x20	|
+		|	20x20	20x20	20x20	20x20	20x20	|
 
-|	20x20	20x20	20x20	20x20	20x20	|
+		|	20x20	20x20	20x20	20x20	20x20	|
 
-|	20x20	20x20	20x20	20x20	20x20	|
-_____________________________________________
+		|	20x20	20x20	20x20	20x20	20x20	|
 
-Ogni blocco 20x20 rappresenta una regione
+		|	20x20	20x20	20x20	20x20	20x20	|
+		_____________________________________________
 
-%% 2_Ho flusso ottico per ogni regione
-u(x,y) e v(x,y)) per ogni quadrato 20x20
+		Ogni blocco 20x20 rappresenta una regione
 
-%% 3_Elimino le regioni che hanno errore residuo troppo alto
-Avrò dei blocchi 20x20 che non saranno assegnati; di fatto, o il blocco era troppo grosso e conteneva regioni con movimenti diversi (improbabile), oppure siamo stati sfigati e abbiamo beccato il contorno di un qualche oggetto (molto più probabile).
+		%% 2_Ho flusso ottico per ogni regione
+		u(x,y) e v(x,y)) per ogni quadrato 20x20
 
-_____________________________________________________________					
+		%% 3_Elimino le regioni che hanno errore residuo troppo alto
+		Avrò dei blocchi 20x20 che non saranno assegnati; di fatto, o il blocco era troppo grosso e conteneva regioni con movimenti diversi (improbabile), oppure siamo stati sfigati e abbiamo beccato il contorno di un qualche oggetto (molto più probabile).
 
-|	20x20		20x20		?20x20?		?20x20?		?20x20?	|				?20x20? blocco non assegnato
+		_____________________________________________________________					
 
-|	20x20		20x20		20x20		?20x20?		?20x20?	|
+		|	20x20		20x20		?20x20?		?20x20?		?20x20?	|				?20x20? blocco non assegnato
 
-|	20x20		20x20		20x20		20x20		?20x20?	|
+		|	20x20		20x20		20x20		?20x20?		?20x20?	|
 
-|	?20x20?		?20x20?		20x20		20x20		?20x20?	|
+		|	20x20		20x20		20x20		20x20		?20x20?	|
 
-|	?20x20?		?20x20?		20x20		20x20		20x20	|
-_____________________________________________________________
+		|	?20x20?		?20x20?		20x20		20x20		?20x20?	|
 
-%% 4_Calcolo il k means sul piano movimento, considerando le regioni 20x20 ch mi sono rimaste (con k=4)
-Avrò 4 macroregioni, ognuna formata da tanti blocchi 20x20
+		|	?20x20?		?20x20?		20x20		20x20		20x20	|
+		_____________________________________________________________
 
-%% 5_Osservo se le u(x,y) e v(x,y) di ogni pixel sono coerenti con u(x,y) v(x,y) delle 4 macroregioni che ho fatto
-Alcune sì, molte no.
+		%% 4_Calcolo il k means adattivo sul piano movimento, considerando le regioni 20x20 ch mi sono rimaste 
+		Avrò n macroregioni, ognuna formata da tanti blocchi 20x20
 
-%% 6_Cosa faccio con quelle rimanenti
-Alcune regioni, ancora delle 20x20 iniziali, non saranno nemmeno arrivate ad essere considerate all'interno del k means, perché le ipotesi sull'affine motion di quel particolare blocco avevano errore residuo troppo alto.
+		%% 5_Osservo se le u(x,y) e v(x,y) di ogni pixel sono coerenti con u(x,y) v(x,y) delle macroregioni che ho fatto
+		Alcune sì, molte no. Tiro fuori dalle regioni i pixel con errore residuo troppo alto.
 
-Altri pixel invece, non risultando coerenti con u e v delle macroregioni, saranno non assegnatei mentre gli altri pixel del blocco di cui facevano parte sì.
+		%% Provo a vedere se, tra i pixel non assegnati, alcuni di questi possono essere assegnati a regioni preesistenti
+		Magari si trovavano in un blocco 20x20 appartenente ad un altra regione, ma sarebbero descritti meglio dalla regione immediatamente adiacente. Tentar non nuoce. Dovrebbe aiutare lungo i bordi.
 
-_____________________________________________________________
+		%% Passo al suddivisore di regioni
+		Separo i blocchi 20x20 che sembrano poter far parte dello stesso movimento, ma non sono tra loro adiacenti
 
-|	ASSEGNATO	ASSEGNATO	20x20		20x20		20x20	|
+		%% Passo in un filtro di regioni
+		Elimino le regioni troppo piccole
 
-|	ASSEGNATO	ASSEGNATO	5x7			20x20		20x20	|
+	%% 
+	% FINE PRIMA ITERAZIONE
+	%% 
+	
+	%%
+	% INIZIO SECONDA ITERAZIONE
+	%%
 
-|	10x8		15x7		ASSEGNATO	ASSEGNATO	20X20	|
+		%% 6_Cosa faccio con quelle rimanenti
+		Alcune regioni, ancora delle 20x20 iniziali, non saranno nemmeno arrivate ad essere considerate all'interno del k means, perché le ipotesi sull'affine motion di quel particolare blocco avevano errore residuo troppo alto.
 
-|	20x20		20x20		ASSEGNATO	ASSEGNATO	20X20	|
+		Altri pixel invece, non risultando coerenti con u e v delle macroregioni, saranno non assegnatei mentre gli altri pixel del blocco di cui facevano parte sì.
 
-|	20X20		20X20		ASSEGNATO	ASSEGNATO	5X5		|
-_____________________________________________________________
+		_____________________________________________________________
 
-Suddivido i blocchi 20x20 in sottoblocchi da 10x10:
+		|	ASSEGNATO	ASSEGNATO	20x20		20x20		20x20	|
 
-_________________________________________________________________________________
+		|	ASSEGNATO	ASSEGNATO	5x7			20x20		20x20	|
 
-|	ASSEGNATO		ASSEGNATO		10x10|10x10		10x10|10x10		10x10|10x10	|
-|	(regione 1)		(regione 1)		0x10|10x10		10x10|10x10		10x10|10x10	|
-|
-|
-|	ASSEGNATO		ASSEGNATO		5x7				10x10|10x10		10x10|10x10	|
-|	(regione 1)		(regione 1)						10x10|10x10		10x10|10x10	|
-|
-|	10x8			15x7			ASSEGNATO		ASSEGNATO		10X10|10x10	|
-|									(regione 2)		(regione 2)		10x10|10x10
-|
-|	10x10|10x10		10x10|10x10		ASSEGNATO		ASSEGNATO		10x10|10x10	|
-|	10x10|10x10		10x10|10x10		(regione 2)		(regione 2)		10x10|10x10	|
-|
-|	10x10|10x10		10x10|10x10		ASSEGNATO		ASSEGNATO		5X5			|
-|	10x10|10x10		10x10|10x10
-_________________________________________________________________________________
+		|	10x8		15x7		ASSEGNATO	ASSEGNATO	20X20	|
+
+		|	20x20		20x20		ASSEGNATO	ASSEGNATO	20X20	|
+
+		|	20X20		20X20		ASSEGNATO	ASSEGNATO	5X5		|
+		_____________________________________________________________
+
+		Suddivido i blocchi 20x20 in sottoblocchi da 10x10:
+
+		_________________________________________________________________________________
+
+		|	ASSEGNATO		ASSEGNATO		10x10|10x10		10x10|10x10		10x10|10x10	|
+		|	(regione 1)		(regione 1)		10x10|10x10		10x10|10x10		10x10|10x10	|
+		|
+		|
+		|	ASSEGNATO		ASSEGNATO		5x7				10x10|10x10		10x10|10x10	|
+		|	(regione 1)		(regione 1)						10x10|10x10		10x10|10x10	|
+		|
+		|	10x8			15x7			ASSEGNATO		ASSEGNATO		10X10|10x10	|
+		|									(regione 2)		(regione 2)		10x10|10x10
+		|
+		|	10x10|10x10		10x10|10x10		ASSEGNATO		ASSEGNATO		10x10|10x10	|
+		|	10x10|10x10		10x10|10x10		(regione 2)		(regione 2)		10x10|10x10	|
+		|
+		|	10x10|10x10		10x10|10x10		ASSEGNATO		ASSEGNATO		5X5			|
+		|	10x10|10x10		10x10|10x10
+		_________________________________________________________________________________
 
 
-%% 7_Ricalcolo le ipotesi sull'affine motion sui nuovi blocchi
-Questa volta, con pixel 10x10, si spera che non ci siano errori residui troppo alti; se ci fossero, poi faremo un'altra iterazione
+		%% 7_Ricalcolo le ipotesi sull'affine motion, sia sulle vecchie regioni, sia sui nuovi blocchi
+		Questa volta, con pixel 10x10, si spera che non ci siano errori residui troppo alti; se ci fossero, poi faremo un'altra iterazione.
+		
+		%% Calcolo l'errore residuo sulle regioni
+		Come passaggio precedente
 
-%% 8_Ricalcolo il k means sui nuovi blocchi, sia i 10x10 che quelli formati dai vecchi pixel rimasti inassegnati
-Considero solo i pixel che non erano stati assegnti al punto 5, avrò quindi altre 4 macroregioni.
+		%% 8_Ricalcolo il k means adattivo, partendo dalle macroregioni trovate precedentemente (che quindi saranno molte di meno), sia i 10x10 che quelli formati dai vecchi pixel rimasti inassegnati
+		Considero quindi macroregioni trovate precedentemente, nuove regioni 10x10, e regioni formate da pixel sciolti.
+		
+		%%Osservo se le u(x,y) e v(x,y) di ogni pixel sono coerenti con u(x,y) v(x,y) delle macroregioni che ho fatto
+		Alcune sì, molte no. Tiro fuori dalle regioni i pixel con errore residuo troppo alto.
+		
+		%% Provo a vedere se, tra i pixel non assegnati, alcuni di questi possono essere assegnati a regioni preesistenti
+		Magari si trovavano in un blocco 20x20 appartenente ad un altra regione, ma sarebbero descritti meglio dalla regione immediatamente adiacente. Tentar non nuoce. Dovrebbe aiutare lungo i bordi.
+		
+		%% Passo in un filtro di regioni
+		Elimino le regioni troppo piccole
+		
+	%% 
+	% FINE SECONDA ITERAZIONE
+	%% 
+		
+	%% SUCCESSIVE ITERAZIONI
+	
 
-%% 9_Confronto le 4 macroregioni trovate al punto 5 con quelle trovate nel punto 8
-Vedo se magari i valori di u e v di queste 8 macroregioni sono simili, se sì unisco le 2 o più regioni tra loro (serve questo passaggio ?). 
+		%% Seguo la logica della seconda iterazione
+		Seguo lo stesso procedimento, e continuo ad iterare finché non raggiungo convergenza, quando solo pochi pixel vengono riassegnati o raggiungo numero massimo iterazioni (20 iterazioni)
+		
+	%%
+	% FINE SUCCESSIVE ITERAZIONI
+	%%
+	
+%% FINE ALGORITMO TRA PRIMI DUE FRAME
 
-Penso che questo discorso abbia senso nel momento avessimo un numero massimo di layer che possiamo assegnare, altrimenti non dovrebbe essere necessario.
+%% TRA COPPIE D I FRAME SUCCESSIVI
 
-%% 10_ Continuo finché non ho asssegnato tutti i pixel ad una regione.
-Ora dovrei avere fatto tutto per i primi 2 frame!
-
-%% Ripetiamo il discorso per i frame 2 e 3, 3-4, ....
-Solo, per risparmiare tempo, le regioni da cui partiremo non saranno più i blocchi 20x20, ma le regioni che abbiamo trovato alla fien del punto 10.
-
-Se i movimenti sono stati piccoli, tra un frame all'altro sarà cambiata l'appartenenza ad una determinata regione solo di pochi pixel (che troveremo quando rifaremo il punto 5).
+	%% Simile al precedente
+	Unica cosa, quando facciamo il kmeans adattivo, partiamo dalle regioni precedenti, diminuendo di molto le iterazioni necessarie per arrivare a convergenza.
+	
+%% FINE
