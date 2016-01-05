@@ -34,12 +34,15 @@
     soglia=soglia+1;
     end   
     
-    affineRegX1 = cell(size(imgReg,1),size(imgReg,2));
-    affineRegY1 = cell(size(imgReg,1),size(imgReg,2));   
-    for i=1:size(imgReg,1)
-        for j=1:size(imgReg,2)          
-            [Hyi,Hxi]= affine1(imgReg{i,j},uReg{i,j},vReg{i,j});
-            affineRegX1{i,j}=Hxi;
-            affineRegY1{i,j}=Hyi;                     
-        end
-    end     
+    %%Restituisco l'immagine suddivisa in regione con label
+    kmean_adattivo_test(u,v);
+    
+%     affineRegX1 = cell(size(imgReg,1),size(imgReg,2));
+%     affineRegY1 = cell(size(imgReg,1),size(imgReg,2));   
+%     for i=1:size(imgReg,1)
+%         for j=1:size(imgReg,2)          
+%             [Hyi,Hxi]= affine1(imgReg{i,j},uReg{i,j},vReg{i,j});
+%             affineRegX1{i,j}=Hxi;
+%             affineRegY1{i,j}=Hyi;                     
+%         end
+%     end     
