@@ -31,8 +31,11 @@
    uReg=uReg'; vReg=vReg';
    uReg=uReg(:); vReg=vReg(:);
    
+   
+   threshold=0.002;
    for i=1:numel(uReg)
        %Funzione che calcola i parametri affini e i vettori di flusso
        %affine 
-       [affineRegX{i},affineRegY{i},uS{i},vS{i}]= affine(uReg{i},vReg{i});     
-   end 
+       [affineRegX{i},affineRegY{i},uS{i},vS{i}]= affine(uReg{i},vReg{i});  
+       [uS{i},vS{i}] = errorStima(uReg{i},vReg{i},uS{i},vS{i},threshold);
+   end
