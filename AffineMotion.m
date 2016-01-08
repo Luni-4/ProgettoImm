@@ -60,7 +60,7 @@
      afc = kmean_adattivo_test(affineRegX,affineRegY,sizeX,sizeY);
      
      %Numero regioni dopo kmeans
-     nr = numel(unique(aff_param_clusterizzati));
+     nr = numel(unique(afc));
      disp(['Il numero delle regioni dopo k-menas è: ' num2str(nr) '.'] );
      
     %% Mostro regioni dopo k means

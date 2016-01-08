@@ -39,7 +39,7 @@ ImageBlocks_v = ImageBlocks_v(:);
 for i=1:size(ImageBlocks_v,1)    
     ImageBlocks_v{i} = (ImageBlocks_v{i}.*0)+i;        
 end
-
 % Ricostruzione dell'immagine partendo dalle celle  in ImageBlocks_v
 ImageBlocks_v=reshape(ImageBlocks_v,[size(ImageBlocks,2),size(ImageBlocks,1)]);
 regioni = cell2mat(ImageBlocks_v);
+regioni=regioni';
