@@ -1,4 +1,4 @@
-function ImageBlocks = Image20x20Subdivider(img)
+function [ImageBlocks, regioni] = Image20x20Subdivider(img)
 %% Funzione per la suddivisione dell'immagine di partenza in blocchi 20x20
 
 %Recupero dimensioni dell'immagine da analizzare
@@ -33,4 +33,17 @@ Y = dimYblock(:);
 % colonna
 ImageBlocks = mat2cell(img,X,Y);
 
+% Creo una truth map della suddivisione in regioni
+ImageBlocks_v = ImageBlocks(:);
+i=1;
+while i<=size(ImageBlocks_v,1)
+    
+    ImageBlocks_v{i,1} = ((ImageBlocks_v{i,1}).*0)+i;
+    i=i+1;
+        
 end
+
+% Ricostruisco l'immagine partendo dalle celle  in ImageBlocks_v
+ImageBlocks_v = (ImageBlocks_v)';
+ImageBlocks_v = reshape((ImageBlocks_v), [size(ImageBlocks,1),size(ImageBlocks,2)]);
+regioni = cell2mat(ImageBlocks_v);

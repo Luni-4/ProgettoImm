@@ -19,8 +19,8 @@
     
     
     %Suddivisione di flusso ottico in regioni 20x20    
-    uReg = Image20x20Subdivider(u);
-    vReg = Image20x20Subdivider(v);  
+    [uReg, regioni] = Image20x20Subdivider(u);
+    [vReg, ~] = Image20x20Subdivider(v);  
     
     % Creazione di vettori celle per parametri affini e flusso ottico (lungo
     % x e y) stimati
@@ -46,7 +46,22 @@
     % Trovare le regioni che non hanno superato il confronto con la soglia
     % (errore troppo elevato)
     eliminaCelle = cellfun(@isempty,uS);
-    % Eliminarle dai vettori di flusso affini
-    affineRegX(eliminaCelle) = [];
-    affineRegY(eliminaCelle) = [];
-%K-means adattivo
+    
+    %Diplay il numero delle regioni
+    nr = numel(unique(regioni));
+    disp(['Il numero delle regioni prima k-menas è: ' num2str(nr) '.'] );
+    
+    %kmeans
+     aff_param_clusterizzati = kmean_adattivo_test(affineRegX,affineRegY);
+     
+     %Numero regioni dopo kmeans
+     nr = numel(unique(aff_param_clusterizzati));
+     disp(['Il numero delle regioni dopo k-menas è: ' num2str(nr) '.'] );
+     
+     
+    
+%     % Eliminarle dai vettori di flusso affini
+%     affineRegX(eliminaCelle) = [ ];
+%     affineRegY(eliminaCelle) = [ ];
+
+    %K-means adattivo
