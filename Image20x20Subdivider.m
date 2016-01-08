@@ -22,7 +22,6 @@ end
 
 if (round(numYblocks)~=numYblocks)
     dimYblock(1, end+ 1) =  (numYblocks - floor(numYblocks))*20 ;
-
 end
 
 % Vettorializzo
@@ -31,19 +30,16 @@ Y = dimYblock(:);
 
 % Suddivido l'immagine in blocchi 20x20, tranne un ipotetica ultima righa o
 % colonna
-ImageBlocks = mat2cell(img,X,Y);
+ImageBlocks = mat2cell(img,round(X),round(Y));
 
-% Creo una truth map della suddivisione in regioni
-ImageBlocks_v = ImageBlocks(:);
-i=1;
-while i<=size(ImageBlocks_v,1)
-    
-    ImageBlocks_v{i,1} = ((ImageBlocks_v{i,1}).*0)+i;
-    i=i+1;
-        
+% Creazione ground truth della suddivisione in regioni
+ImageBlocks_v = ImageBlocks';
+ImageBlocks_v = ImageBlocks_v(:);
+
+for i=1:size(ImageBlocks_v,1)    
+    ImageBlocks_v{i} = (ImageBlocks_v{i}.*0)+i;        
 end
 
-% Ricostruisco l'immagine partendo dalle celle  in ImageBlocks_v
-ImageBlocks_v = (ImageBlocks_v)';
-ImageBlocks_v = reshape((ImageBlocks_v), [size(ImageBlocks,1),size(ImageBlocks,2)]);
+% Ricostruzione dell'immagine partendo dalle celle  in ImageBlocks_v
+ImageBlocks_v=reshape(ImageBlocks_v,[size(ImageBlocks,2),size(ImageBlocks,1)]);
 regioni = cell2mat(ImageBlocks_v);
