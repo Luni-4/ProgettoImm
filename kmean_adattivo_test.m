@@ -1,4 +1,4 @@
-function [aff_param_clusterizzati] = kmean_adattivo_test(affineRegX,affineRegY)
+function [aff_param_clusterizzati] = kmean_adattivo_test(affineRegX,affineRegY,sizeX,sizeY)
 %% Tentantivo di kmeans sui parametri affini
 
 % Controlliamo il tempo di esecuzione
@@ -291,7 +291,7 @@ dist_no_ok = logical(dist_no_ok);
 centri_cluster_p1(dist_no_ok,:) = [];
 centri_cluster_p2(dist_no_ok,:) = [];
 
-%% Ottengo un'immagine clusterizzata (DA CONTINUARE DA QUI)
+%% Ottengo un'immagine clusterizzata
 
 % Vettorizzo l'immagine per calcolare efficentemente, e ripeto l'immagine
 % vettorizzata n volte, dove n è il numero dei cluster trovati
@@ -328,7 +328,7 @@ distanza= sqrt(distanza_p1+distanza_p2);
 [~,cluster_assegnamento] = min(distanza,[],2);
 
 % Ricostruisco l'immagine, sostituendo ad ogni pixel il numero del cluster di cui fa parte 
-aff_param_clusterizzati = reshape(cluster_assegnamento,[6 11]);
+aff_param_clusterizzati = reshape(cluster_assegnamento,[sizeX, sizeY]);
 
 toc;
 

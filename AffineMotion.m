@@ -1,9 +1,9 @@
     % Caricamento dei frame
-    img1 = imread('images/frame01.png');
-    img2 = imread('images/frame02.png');
+    img1 = imread('images/cars1_01.jpg');
+    img2 = imread('images/cars1_02.jpg');
     
     % Riduzione di 1/4 per fattori computazionali
-    resize = 0.25;   
+    resize = 1;   
     img1 = imresize(img1, resize);
     img2 = imresize(img2, resize);
     
@@ -30,6 +30,7 @@
     vS=cell(numel(uReg),1);
    
     %Vettorializzazione vettori flusso ottico lungo le x e le y
+    sizeX = size(uReg,1);   sizeY = size(uReg,2);
     uReg=uReg'; vReg=vReg'; 
     uReg=uReg(:); vReg=vReg(:);
    
@@ -51,17 +52,51 @@
     nr = numel(unique(regioni));
     disp(['Il numero delle regioni prima k-menas è: ' num2str(nr) '.'] );
     
+%     % Eliminarle dai vettori di flusso affini
+%     affineRegX(eliminaCelle) = [ ];
+%     affineRegY(eliminaCelle) = [ ];
+    
     %kmeans
-     aff_param_clusterizzati = kmean_adattivo_test(affineRegX,affineRegY);
+     afc = kmean_adattivo_test(affineRegX,affineRegY,sizeX,sizeY);
      
      %Numero regioni dopo kmeans
      nr = numel(unique(aff_param_clusterizzati));
      disp(['Il numero delle regioni dopo k-menas è: ' num2str(nr) '.'] );
      
-     
+    %% Mostro regioni dopo k means
     
-%     % Eliminarle dai vettori di flusso affini
-%     affineRegX(eliminaCelle) = [ ];
-%     affineRegY(eliminaCelle) = [ ];
-
-    %K-means adattivo
+    i=1;
+    regioni_new = cell(size(uS,1), size(uS,2));
+    afc_v = afc(:);
+    
+    while(i<=numel(afc_v))
+        
+        regioni_new{i,1} = afc_v(i,1)*ones(size(uReg{i,1},1),size(uReg{i,1},2)) ;
+        i=i+1;
+    
+    end
+    
+    regioni_new = (regioni_new)';
+    
+    regioni_new = reshape(regioni_new, [size(afc,1),size(afc,2)]);
+    regioni_new = cell2mat(regioni_new);
+    
+    %% Mostra a che punto siamo arrivati
+    figure(1);
+    
+    subplot(2,2,1);
+    imshow(img1,[]);
+    title('Originale 1.')
+         
+    subplot(2,2,2);
+    imshow(img2,[]);
+    title('Originale 2.')
+    
+    subplot(2,2,3);
+    imshow(regioni,[]);
+    title('Regioni prima kmeans.');
+    
+    subplot(2,2,4);
+    imshow(regioni_new,[]);
+    title('Regioni dopo kmeans.');
+        
