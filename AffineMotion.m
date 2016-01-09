@@ -43,10 +43,12 @@
     for i=1:numregioni
         [xt,yt]=find(regioni == i);
         [Axi, Ayi, uS, vS] = affine(u(regioni==i),v(regioni==i),xt,yt);
-        affiniX(i,1:3)=Axi';
-        affiniY(i,1:3)=Ayi';
         uStimato(regioni == i)=uS;
         vStimato(regioni == i)=vS;
+        errorStima(u(regioni==i),v(regioni==i),uStimato(regioni == i),vStimato(regioni == i),threshold);
+        affiniX(i,1:3)=Axi';
+        affiniY(i,1:3)=Ayi';
+       
     end  
     
      %Diplay il numero delle regioni
