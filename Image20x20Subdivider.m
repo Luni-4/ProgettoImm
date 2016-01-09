@@ -1,4 +1,4 @@
-function [ImageBlocks, regioni] = Image20x20Subdivider(img)
+function [regioni, numregioni] = Image20x20Subdivider(img)
 %% Funzione per la suddivisione dell'immagine di partenza in blocchi 20x20
 
 %Recupero dimensioni dell'immagine da analizzare
@@ -43,3 +43,4 @@ end
 ImageBlocks_v=reshape(ImageBlocks_v,[size(ImageBlocks,2),size(ImageBlocks,1)]);
 regioni = cell2mat(ImageBlocks_v);
 regioni=regioni';
+numregioni=size(ImageBlocks_v,1);

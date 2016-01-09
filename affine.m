@@ -1,22 +1,28 @@
-function [Hxi,Hyi,uStimato,vStimato] = affine(uReg,vReg)
-    sumr=0; 
-    sumvx=0;
-    sumvy=0;
-    for x=1:size(uReg,1)
-        for y=1:size(uReg,2)
-            regressor = [1 x y]';
-            sumr=sumr+(regressor*regressor');
-            sumvx=sumvx+regressor*uReg(x,y);
-            sumvy=sumvy+regressor*vReg(x,y);            
-        end
-    end
-    Hxi=sumr\sumvx;
-    Hyi=sumr\sumvy;     
+% Calcolo dei parametri affini e dei flussi ottici stimati per ogni regione 
+function [Axi, Ayi,uStimato, vStimato ] = affine(uReg,vReg,xt,yt)
     
-    % Per ogni pixel in regione viene calcolata stima del flusso ottico
-    % lungo le x e le y
-    [rt,ct]=find((uReg==0 | uReg~=0)); % uStimato,vStimatotrovare indici regione 
-    z=[ones([numel(uReg),1]) rt ct]; % Costruzione regressore 
-    uStimato=reshape(z*Hxi,[size(uReg,1),size(uReg,2)]); %Calcolo valori stimati flusso ottico vx
-    vStimato=reshape(z*Hyi,[size(uReg,1),size(uReg,2)]); %Calcolo valori stimati flusso ottico vy
+    %Regressore trasposto
+    regressorT=[ones(numel(xt),1) xt yt];
+    % Regressore
+    regressor=regressorT';
+    % Somma del prodotto matriciale tra regressore e regressore trasposto 
+    sumr=regressor(1:3,:)*regressorT(:,1:3);
+    % Somma del prodotto matriciale tra regressore e flusso ottico lungo
+    % le x
+    sumvx=regressor(1:3,:)*uReg;
+    % Somma del prodotto matriciale tra regressore e flusso ottico lungo le
+    % y
+    sumvy=regressor(1:3,:)*vReg;
+    
+    % Risoluzione del sistema Ax=b per i parametri affini dei flussi ottici lungo le x 
+    Axi=sumr\sumvx;   
+    % Risoluzione del sistema Ax=b per i parametri affini dei flussi ottici lungo le y
+    Ayi=sumr\sumvy;  
+    
+    %Se si vogliono usare le pseudo inverse
+    %Hxi=pinv(sumr)*sumvx; %parametri affini flussi ottici lungo le x
+    %Hyi=pinv(sumr)*sumvy; %parametri affini flussi ottici lungo le y 
+
+    uStimato = regressorT(:,1:3)*Axi; %Calcolo dei flussi ottici stimati lungo le x
+    vStimato = regressorT(:,1:3)*Ayi; %Calcolo dei flussi ottici stimati lungo le y
 end

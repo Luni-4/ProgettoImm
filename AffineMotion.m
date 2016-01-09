@@ -3,9 +3,9 @@
     img2 = imread('images/cars1_02.jpg');
     
     % Riduzione di 1/4 per fattori computazionali
-    resize = 1;   
-    img1 = imresize(img1, resize);
-    img2 = imresize(img2, resize);
+    %resize = 1;   
+   % img1 = imresize(img1, resize);
+    %img2 = imresize(img2, resize);
     
     % Trasformazione in scala di grigio e a valori double per poter essere forniti in input
     % al calcolatore di flusso ottico
@@ -19,84 +19,84 @@
     
     
     %Suddivisione di flusso ottico in regioni 20x20    
-    [uReg, regioni] = Image20x20Subdivider(u);
-    [vReg, ~] = Image20x20Subdivider(v);  
+    [regioni, numregioni] = Image20x20Subdivider(u); 
     
-    % Creazione di vettori celle per parametri affini e flusso ottico (lungo
-    % x e y) stimati
-    affineRegX = cell(numel(uReg),1);
-    affineRegY = cell(numel(uReg),1);
-    uS=cell(numel(uReg),1);
-    vS=cell(numel(uReg),1);
-   
-    %Vettorializzazione vettori flusso ottico lungo le x e le y
-    sizeX = size(uReg,1);   sizeY = size(uReg,2);
-    uReg=uReg'; vReg=vReg'; 
-    uReg=uReg(:); vReg=vReg(:);
+    
    
    
-    threshold=0.002; %impostare soglia per eliminazione di valori troppo alti
-    for i=1:numel(uReg)
+   
+    
+    %for i=1:numel(uReg)
        %Funzione che calcola i parametri affini e i vettori di flusso
        %affine 
-       [affineRegX{i},affineRegY{i},uS{i},vS{i}]= affine(uReg{i},vReg{i}); 
+       %[affineRegX{i},affineRegY{i},uS{i},vS{i}]= affine(uReg{i},vReg{i}); 
        % Funzione che calcola errore nei parametri affini appena calcolati 
-       [uS{i},vS{i}] = errorStima(uReg{i},vReg{i},uS{i},vS{i},threshold);
-    end
-
-    % Trovare le regioni che non hanno superato il confronto con la soglia
-    % (errore troppo elevato)
-    eliminaCelle = cellfun(@isempty,uS);
+      %[uS{i},vS{i}] = errorStima(uReg{i},vReg{i},uS{i},vS{i},threshold);
+   % end
     
-    %Diplay il numero delle regioni
-    nr = numel(unique(regioni));
-    disp(['Il numero delle regioni prima k-menas è: ' num2str(nr) '.'] );
+    affiniX=zeros(numregioni,3);
+    affiniY=zeros(numregioni,3);
+    uStimato=u;
+    vStimato=v;
+    
+    threshold=0.002; %impostare soglia per eliminazione di valori troppo alti
+    for i=1:numregioni
+        [xt,yt]=find(regioni == i);
+        [Axi, Ayi, uS, vS] = affine(u(regioni==i),v(regioni==i),xt,yt);
+        affiniX(i,1:3)=Axi';
+        affiniY(i,1:3)=Ayi';
+        uStimato(regioni == i)=uS;
+        vStimato(regioni == i)=vS;
+    end  
+    
+     %Diplay il numero delle regioni
+    %nr = numel(unique(regioni));
+    %disp(['Il numero delle regioni prima k-menas è: ' num2str(nr) '.'] );
     
 %     % Eliminarle dai vettori di flusso affini
 %     affineRegX(eliminaCelle) = [ ];
 %     affineRegY(eliminaCelle) = [ ];
     
     %kmeans
-     afc = kmean_adattivo_test(affineRegX,affineRegY,sizeX,sizeY);
+    % afc = kmean_adattivo_test(affineRegX,affineRegY,sizeX,sizeY);
      
      %Numero regioni dopo kmeans
-     nr = numel(unique(afc));
-     disp(['Il numero delle regioni dopo k-menas è: ' num2str(nr) '.'] );
+     %nr = numel(unique(afc));
+    % disp(['Il numero delle regioni dopo k-menas è: ' num2str(nr) '.'] );
      
     %% Mostro regioni dopo k means
     
-    i=1;
-    regioni_new = cell(size(uS,1), size(uS,2));
-    afc_v = afc(:);
+   % i=1;
+    %regioni_new = cell(size(uS,1), size(uS,2));
+    %afc_v = afc(:);
     
-    while(i<=numel(afc_v))
+   % while(i<=numel(afc_v))
         
-        regioni_new{i,1} = afc_v(i,1)*ones(size(uReg{i,1},1),size(uReg{i,1},2)) ;
-        i=i+1;
+     %   regioni_new{i,1} = afc_v(i,1)*ones(size(uReg{i,1},1),size(uReg{i,1},2)) ;
+     %   i=i+1;
     
-    end
+   % end
     
-    regioni_new = (regioni_new)';
+   % regioni_new = (regioni_new)';
     
-    regioni_new = reshape(regioni_new, [size(afc,1),size(afc,2)]);
-    regioni_new = cell2mat(regioni_new);
+    %regioni_new = reshape(regioni_new, [size(afc,1),size(afc,2)]);
+    %regioni_new = cell2mat(regioni_new);
     
     %% Mostra a che punto siamo arrivati
-    figure(1);
+   % figure(1);
     
-    subplot(2,2,1);
-    imshow(img1,[]);
-    title('Originale 1.')
+    %subplot(2,2,1);
+   % imshow(img1,[]);
+    %title('Originale 1.')
          
-    subplot(2,2,2);
-    imshow(img2,[]);
-    title('Originale 2.')
+    %subplot(2,2,2);
+   % imshow(img2,[]);
+    %title('Originale 2.')
     
-    subplot(2,2,3);
-    imshow(regioni,[]);
-    title('Regioni prima kmeans.');
+   % subplot(2,2,3);
+   % imshow(regioni,[]);
+   % title('Regioni prima kmeans.');
     
-    subplot(2,2,4);
-    imshow(regioni_new,[]);
-    title('Regioni dopo kmeans.');
-        
+   % subplot(2,2,4);
+   % imshow(regioni_new,[]);
+    %title('Regioni dopo kmeans.');
