@@ -33,6 +33,8 @@
     for i=1:numregioni
         [xt,yt]=find(regioni == i);
         [Axi, Ayi, uS, vS] = affine(u(regioni==i),v(regioni==i),xt,yt);
+        uStimato(regioni == i)=uS;
+        vStimato(regioni == i)=vS;
         if errorStima(u(regioni==i),v(regioni==i),uS,vS,threshold) == 1
               affiniX(i,1:3)=Axi'; % Salvataggio dei parametri affini delle x
               affiniX(i,4)=i; % Salvataggio della regione          
@@ -43,9 +45,9 @@
               regioniScartateX(i,4)=i; % Salvataggio della regione          
               regioniScartateY(i,1:3)=Ayi'; % Salvataggio dei parametri affini della y
               regioniScartateY(i,4)=i;  
+              regioni(regioni == i)=0; %Regioni scartate vengono poste al valore 0
         end
-        uStimato(regioni == i)=uS;
-        vStimato(regioni == i)=vS;       
+               
     end     
 
     
