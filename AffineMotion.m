@@ -19,45 +19,47 @@
     
     
     %Suddivisione di flusso ottico in regioni 20x20    
-    [regioni, numregioni] = Image20x20Subdivider(u); 
+    [regioni, numregioni] = Image20x20Subdivider(u);    
     
     
-   
-   
-   
+    affiniX=zeros(numregioni,4); %Matrice usata per salvare parametri affini x e regione associata
+    affiniY=zeros(numregioni,4); %Matrice usata per salvare parametri affini y e regione associata
+    uStimato=u; %Vettore usato per salvare flusso ottico stimato lungo le x
+    vStimato=v; %Vettore usato per salvare flusso stimato lungo le y
+    regioniScartateX=affiniX; %Matrice usata per salvare parametri affini scartati x e regione associata
+    regioniScartateY=affiniY; %Matrice usata per salvare parametri affini scartati y e regione associata
     
-    %for i=1:numel(uReg)
-       %Funzione che calcola i parametri affini e i vettori di flusso
-       %affine 
-       %[affineRegX{i},affineRegY{i},uS{i},vS{i}]= affine(uReg{i},vReg{i}); 
-       % Funzione che calcola errore nei parametri affini appena calcolati 
-      %[uS{i},vS{i}] = errorStima(uReg{i},vReg{i},uS{i},vS{i},threshold);
-   % end
-    
-    affiniX=zeros(numregioni,3);
-    affiniY=zeros(numregioni,3);
-    uStimato=u;
-    vStimato=v;
-    
-    threshold=0.002; %impostare soglia per eliminazione di valori troppo alti
+    threshold=1; %impostare soglia per eliminazione di valori troppo alti
     for i=1:numregioni
         [xt,yt]=find(regioni == i);
         [Axi, Ayi, uS, vS] = affine(u(regioni==i),v(regioni==i),xt,yt);
+        if errorStima(u(regioni==i),v(regioni==i),uS,vS,threshold) == 1
+              affiniX(i,1:3)=Axi'; % Salvataggio dei parametri affini delle x
+              affiniX(i,4)=i; % Salvataggio della regione          
+              affiniY(i,1:3)=Ayi'; % Salvataggio dei parametri affini della y
+              affiniY(i,4)=i;  
+        else
+              regioniScartateX(i,1:3)=Axi'; % Salvataggio dei parametri affini delle x
+              regioniScartateX(i,4)=i; % Salvataggio della regione          
+              regioniScartateY(i,1:3)=Ayi'; % Salvataggio dei parametri affini della y
+              regioniScartateY(i,4)=i;  
+        end
         uStimato(regioni == i)=uS;
-        vStimato(regioni == i)=vS;
-        errorStima(u(regioni==i),v(regioni==i),uStimato(regioni == i),vStimato(regioni == i),threshold);
-        affiniX(i,1:3)=Axi';
-        affiniY(i,1:3)=Ayi';
-       
-    end  
+        vStimato(regioni == i)=vS;       
+    end     
+
+    
+    %Eliminazione di valori affini che non hanno superato la soglia
+    affiniX((affiniX(:,4)==0),:)=[];
+    affiniY((affiniY(:,4)==0),:)=[];  
+    
+    %Ripulitura vettori delle regioni scartati
+    regioniScartateX((regioniScartateX(:,4)==0),:)=[];
+    regioniScartateY((regioniScartateY(:,4)==0),:)=[]; 
     
      %Diplay il numero delle regioni
     %nr = numel(unique(regioni));
-    %disp(['Il numero delle regioni prima k-menas è: ' num2str(nr) '.'] );
-    
-%     % Eliminarle dai vettori di flusso affini
-%     affineRegX(eliminaCelle) = [ ];
-%     affineRegY(eliminaCelle) = [ ];
+    %disp(['Il numero delle regioni prima k-menas è: ' num2str(nr) '.'] );    
     
     %kmeans
     % afc = kmean_adattivo_test(affineRegX,affineRegY,sizeX,sizeY);

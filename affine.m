@@ -1,5 +1,5 @@
 % Calcolo dei parametri affini e dei flussi ottici stimati per ogni regione 
-function [Axi, Ayi,uStimato, vStimato ] = affine(uReg,vReg,xt,yt)
+function [Axi, Ayi,uStimato, vStimato ] = affine(uReg,vReg,xt,yt,th)
     
     %Regressore trasposto
     regressorT=[ones(numel(xt),1) xt yt];
@@ -24,5 +24,6 @@ function [Axi, Ayi,uStimato, vStimato ] = affine(uReg,vReg,xt,yt)
     %Hyi=pinv(sumr)*sumvy; %parametri affini flussi ottici lungo le y 
 
     uStimato = regressorT(:,1:3)*Axi; %Calcolo dei flussi ottici stimati lungo le x
-    vStimato = regressorT(:,1:3)*Ayi; %Calcolo dei flussi ottici stimati lungo le y
+    vStimato = regressorT(:,1:3)*Ayi; %Calcolo dei flussi ottici stimati lungo le y   
+        
 end
