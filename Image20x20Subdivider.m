@@ -17,11 +17,11 @@ dimYblock = ones(1,floor(numYblocks))*20;
 %Se dimensioni immagine immgagine non multiplo di 20, ci sarà un ultima
 %riga e/o colonna più piccola alla fine
 if (round(numXblocks)~=numXblocks)
-    dimXblock(end+ 1, 1) =  (numXblocks - floor(numXblocks))*20 ;
+    dimXblock(end + 1, 1) =  (numXblocks - floor(numXblocks))*20 ;
 end
 
 if (round(numYblocks)~=numYblocks)
-    dimYblock(1, end+ 1) =  (numYblocks - floor(numYblocks))*20 ;
+    dimYblock(1, end + 1) =  (numYblocks - floor(numYblocks))*20 ;
 end
 
 % Vettorializzo
