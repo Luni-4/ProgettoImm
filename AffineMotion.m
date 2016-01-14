@@ -24,9 +24,8 @@
         %Suddivisione di flusso ottico in regioni   
         if iterazione == 0
             [regioni, numregioni] = Image20x20Subdivider(u);
-        else
-            [regioni, numregioni] = ImageSubdivider(regClassficate,size(img1,1),size(img2,1));
-        end            
+        end
+             
 
 
         affiniX=zeros(numregioni,4); %Matrice usata per salvare parametri affini x e regione associata
@@ -64,53 +63,17 @@
 
         %Ripulitura vettori delle regioni scartati
         regioniScartateX((regioniScartateX(:,4)==0),:)=[];
-        regioniScartateY((regioniScartateY(:,4)==0),:)=[]; 
+        regioniScartateY((regioniScartateY(:,4)==0),:)=[];    
 
-         %Diplay il numero delle regioni
-        %nr = numel(unique(regioni));
-        %disp(['Il numero delle regioni prima k-menas è: ' num2str(nr) '.'] );    
+        %Applico kmeans adattivo
+        [newAffiniX, newAffiniY, newRegioni] = kmean_adattivo_test(affiniX,affiniY,regioni);
 
-        %kmeans
-        % afc = kmean_adattivo_test(affineRegX,affineRegY,sizeX,sizeY);
-
-         %Numero regioni dopo kmeans
-         %nr = numel(unique(afc));
-        % disp(['Il numero delle regioni dopo k-menas è: ' num2str(nr) '.'] );
-
-        %% Mostro regioni dopo k means
-
-       % i=1;
-        %regioni_new = cell(size(uS,1), size(uS,2));
-        %afc_v = afc(:);
-
-       % while(i<=numel(afc_v))
-
-         %   regioni_new{i,1} = afc_v(i,1)*ones(size(uReg{i,1},1),size(uReg{i,1},2)) ;
-         %   i=i+1;
-
-       % end
-
-       % regioni_new = (regioni_new)';
-
-        %regioni_new = reshape(regioni_new, [size(afc,1),size(afc,2)]);
-        %regioni_new = cell2mat(regioni_new);
-
-        %% Mostra a che punto siamo arrivati
-       % figure(1);
-
-        %subplot(2,2,1);
-       % imshow(img1,[]);
-        %title('Originale 1.')
-
-        %subplot(2,2,2);
-       % imshow(img2,[]);
-        %title('Originale 2.')
-
-       % subplot(2,2,3);
-       % imshow(regioni,[]);
-       % title('Regioni prima kmeans.');
-
-       % subplot(2,2,4);
-       % imshow(regioni_new,[]);
-        %title('Regioni dopo kmeans.');
+         subplot(1,2,1);
+         imshow(regioni,[]);
+         title('Prima kmeans.');
+    
+        subplot(1,2,2);
+        imshow(newRegioni,[]);
+        title('Dopo kmeans.');
+ 
     %end % Fine iterazioni singolo frame
