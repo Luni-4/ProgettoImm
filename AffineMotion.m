@@ -1,3 +1,4 @@
+%function AffineMotion(u,v)
     % Caricamento dei frame
     img1 = imread('images/cars1_01.jpg');
     img2 = imread('images/cars1_02.jpg');
@@ -10,12 +11,13 @@
     % Trasformazione in scala di grigio e a valori double per poter essere forniti in input
     % al calcolatore di flusso ottico
     img1 = double(rgb2gray(img1));
-    img2 = double(rgb2gray(img2));
+   img2 = double(rgb2gray(img2));
     
     % Funzione che calcola flusso ottico tra 2 immagini e restituisce
     % derivata lungo le x,y e tempo più vettori di flusso ottico   
     
-    [u,v] = Optflow(img1,img2);
+    [u,v] = Optflow(img1,img2); 
+
     
     iterazione=0; %Variabile che salva numero di iterazioni compiute su frame
     
@@ -77,3 +79,4 @@
         title('Dopo kmeans.');
  
     %end % Fine iterazioni singolo frame
+%end
