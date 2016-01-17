@@ -1,15 +1,5 @@
-function [newAffiniX, newAffiniY, newRegioni] = kmean_adattivo_test(affiniX,affiniY,regioni)
-%% Tentantivo di kmeans sui parametri affini
-
-% Controlliamo il tempo di esecuzione
-tic
-
-% Faccio una copia 
-affiniX_c = affiniX;
-affiniY_c = affiniY;
-
-
-%% Applico il kmeans adattivo ai valori che ho trovato
+function [centri_cluster_p1,centri_cluster_p2] = kmean_adattivo(affiniX,affiniY)
+%% Kmeans sui parametri affini
 
 % Contatore numero cluster
 num_clust = 0;
@@ -49,7 +39,7 @@ while(true)
                        
         % Calcolo ampiezza di banda
         p1Dist_bw = sqrt((sum(sum((affiniX(:,1:3) - p1Seed).^2,2),1))/size(affiniX,1));
-        p2Dist_bw = sqrt((sum(sum((affiniY(:,1:3) - p2Seed).^2,2),1))/size(affiniX,1));
+        p2Dist_bw = sqrt((sum(sum((affiniY(:,1:3) - p2Seed).^2,2),1))/size(affiniY,1));
             
         % Controllo che i valori siano nell'ampiezza di banda di interesse
         if(exist('valori_ok','var'))
@@ -129,61 +119,4 @@ centri_cluster_p1(centri_no_ok) = [];
 centri_cluster_p2(centri_no_ok) = [];
 
 
-%% Ottengo un'immagine clusterizzata
-
-% Vettorizzo l'immagine per calcolare efficentemente, e ripeto l'immagine
-% vettorizzata n volte, dove n è il numero dei cluster trovati
-affiniX_ripetuta = repmat(affiniX_c(:,1:3),[1,1,size(centri_cluster_p1,1)]);
-affiniY_ripetuta = repmat(affiniY_c(:,1:3),[1,1,size(centri_cluster_p2,1)]);
-
-% Faccio lo stesso per il centro dei cluster
-% Creo array tridimensionale
-ccp1 = centri_cluster_p1;
-ccp2 = centri_cluster_p2;
-
-[r,c] = size(centri_cluster_p1);
-nlay  = 3;
-centri_cluster_p1   = permute(reshape(centri_cluster_p1',[c,r/nlay,nlay]),[2,1,3]);
-
-[r,c] = size(centri_cluster_p2);
-nlay  = 3;
-centri_cluster_p2   = permute(reshape(centri_cluster_p2',[c,r/nlay,nlay]),[2,1,3]);
-
-centri_cluster_p1 = repmat(centri_cluster_p1,[size(affiniX_c,1),1,1]);
-centri_cluster_p2 = repmat(centri_cluster_p2,[size(affiniX_c,1),1,1]);
-
-%Calcolo distanza di ogni punto rispetto centro cluster
-distanzaX = sum(((affiniX_ripetuta-centri_cluster_p1).^2),2);
-distanzaY = sum(((affiniY_ripetuta-centri_cluster_p2).^2),2);
-
-distanza = (distanzaX+distanzaY)./2;
-
-
-% Assegno ogni punto al cluster più vicino
-[~,cluster_assegnamento] = min(distanza,[],3);
-
-% Riordino la numerazione delle regioni prima kmeans
-vecchiValori = unique(regioni);
-for i=1:size(vecchiValori,1)
-    
-    regioni(regioni == vecchiValori(i,1)) = i;
-       
-end
-
-% Ricostruisco l'immagine, sostituendo ad ogni regione il numero del cluster di cui fa parte 
-newRegioni = zeros(size(regioni,1),size(regioni,2));
-
-for i=1:size(cluster_assegnamento,1);
-    newRegioni(regioni==i) = cluster_assegnamento(i,1);    
-end
-
-% PRmetri affini per ogni regione
-newAffiniX = zeros(size(centri_cluster_p1,3),4);
-newAffiniY = zeros(size(centri_cluster_p1,3),4);
-
-for i=1:size(centri_cluster_p1,3)
-    newAffiniX(i,:) = [ccp1(cluster_assegnamento(i,1),:), i];
-    newAffiniY(i,:) = [ccp2(cluster_assegnamento(i,1),:), i];
-end
-toc;
 end

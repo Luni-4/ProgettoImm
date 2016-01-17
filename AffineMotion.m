@@ -67,16 +67,37 @@
         regioniScartateX((regioniScartateX(:,4)==0),:)=[];
         regioniScartateY((regioniScartateY(:,4)==0),:)=[];    
 
-        %Applico kmeans adattivo
-        [newAffiniX, newAffiniY, newRegioni] = kmean_adattivo_test(affiniX,affiniY,regioni);
+        %Kmeans adattivo
+        [ccp1,ccp2]= kmean_adattivo(affiniX,affiniY);
+        
+        %Assegnameno regioni a cluster più vicino
+        [newAffiniX, newAffiniY, newRegioni] = assegnaCluster(affiniX, affiniY, ccp1,ccp2,regioni);
 
-         subplot(1,2,1);
+%         % Elimino pixel con errore troppo alto da regioni 
+%         newRegioni = residualError(newRegioni,newAffiniX,newAffiniY,u,v);
+        
+        % Separo le regioni non connesse
+        newRegioni_2 = separaRegioni(newRegioni);
+        
+        % Elimino regioni troppo piccole
+        newRegioni_2 = filtroRegioni(newRegioni_2);
+        
+        
+        subplot(2,2,1);
+         imshow(img1,[]);
+         title('Immagine partenza.'); 
+        
+        subplot(2,2,2);
          imshow(regioni,[]);
-         title('Prima kmeans.');
+         title(['Prima kmeans, cluster= ', num2str(numel(unique(regioni))), '.']);
     
-        subplot(1,2,2);
+        subplot(2,2,3);
         imshow(newRegioni,[]);
-        title('Dopo kmeans.');
+        title(['Dopo kmeans, cluster= ', num2str(numel(unique(newRegioni))), '.']);
+        
+        subplot(2,2,4);
+        imshow(newRegioni_2,[]);
+        title(['Dopo separa regioni e filtro, cluster= ', num2str(numel(unique(newRegioni_2))), '.']);
  
     %end % Fine iterazioni singolo frame
 %end
