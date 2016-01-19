@@ -11,7 +11,7 @@
     % Trasformazione in scala di grigio e a valori double per poter essere forniti in input
     % al calcolatore di flusso ottico
     img1 = double(rgb2gray(img1));
-   img2 = double(rgb2gray(img2));
+    img2 = double(rgb2gray(img2));
     
     % Funzione che calcola flusso ottico tra 2 immagini e restituisce
     % derivata lungo le x,y e tempo più vettori di flusso ottico   

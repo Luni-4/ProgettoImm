@@ -30,11 +30,11 @@ while(true)
         % Calcolo distanza euclidea tra i punti
         %vettore seed e valori vettori parametri affini
         if(exist('p1Dist','var'))
-               p1Dist = []; 
-               p2Dist = []; 
+               clearvars p1Dist; 
+               clearvars p2Dist; 
         end
-        p1Dist(:,1) = sqrt(sum((affiniX(:,1:3) - p1Seed).^2,2));
-        p2Dist(:,1) = sqrt(sum((affiniY(:,1:3) - p2Seed).^2,2));
+        p1Dist(:,1) = sqrt(sum(((affiniX(:,1:3) - p1Seed).^2),2));
+        p2Dist(:,1) = sqrt(sum(((affiniY(:,1:3) - p2Seed).^2),2));
      
                        
         % Calcolo ampiezza di banda
