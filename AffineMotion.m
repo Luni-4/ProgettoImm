@@ -1,7 +1,7 @@
 %function AffineMotion(u,v)
     % Caricamento dei frame
-    img1 = imread('images/cars1_05.jpg');
-    img2 = imread('images/cars1_06.jpg');
+    img1 = imread('images/frame01.png');
+    img2 = imread('images/frame02.png');
     
     % Riduzione di 1/4 per fattori computazionali
     resize = 1/2;   

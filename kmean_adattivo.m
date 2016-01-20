@@ -118,10 +118,11 @@ dist_cc2 = diff(centri_cluster_p2,1,1);
 % Elimino i centri che sono troppo vicini (PER ORA DISTANZA DI PROVA 0,75)
 centri_no_ok = (sqrt(sum((dist_cc1).^2,2)) + sqrt(sum((dist_cc2).^2,2)))./2<=0.75; % Calcolo distanza tra centri
 centri_no_ok = any(centri_no_ok==1,2);           % Controllo se centri sono più vicini distanza
-centri_no_ok = [false;centri_no_ok];             % Aggiunta riga per rendere booleano stessa dimensione centri_no_ok
+centri_no_ok = [false;centri_no_ok];  % Aggiunta riga per rendere booleano stessa dimensione centri_no_ok
 
-centri_cluster_p1(centri_no_ok) = [];
-centri_cluster_p2(centri_no_ok) = [];
+
+centri_cluster_p1(centri_no_ok,:) = [];
+centri_cluster_p2(centri_no_ok,:) = [];
 
 
 end
