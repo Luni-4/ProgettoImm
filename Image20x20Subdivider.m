@@ -32,15 +32,28 @@ Y = dimYblock(:);
 % colonna
 ImageBlocks = mat2cell(img,round(X),round(Y));
 
-% Creazione ground truth della suddivisione in regioni
+% Immagine viene trasposta perché Matlab vettorializza per colonne e non
+% per righe
 ImageBlocks_v = ImageBlocks';
+
+% Vettorializzazione
 ImageBlocks_v = ImageBlocks_v(:);
 
+% Creazione ground truth per la suddivisione in regioni
 for i=1:size(ImageBlocks_v,1)    
     ImageBlocks_v{i} = (ImageBlocks_v{i}.*0)+i;        
 end
-numregioni=size(ImageBlocks_v,1);
-% Ricostruzione dell'immagine partendo dalle celle  in ImageBlocks_v
-ImageBlocks_v=reshape(ImageBlocks_v,[size(ImageBlocks,2),size(ImageBlocks,1)]);
+
+% Restituire numero di regioni create
+numregioni = size(ImageBlocks_v,1);
+
+% Ricostruzione dell'immagine partendo dal vettore trasposto (inversione delle dimensioni iniziali di partenza) 
+ImageBlocks_v = reshape(ImageBlocks_v,[size(ImageBlocks,2),size(ImageBlocks,1)]);
+
+% Trasposizione dell'immagine per riportarla alle dimensioni originali
+ImageBlocks_v = ImageBlocks_v';
+
+% Ricomposizione da matrice di celle a matrice di valori
 regioni = cell2mat(ImageBlocks_v);
-regioni=regioni';
+
+

@@ -33,8 +33,8 @@ while(true)
                clearvars p1Dist; 
                clearvars p2Dist; 
         end
-        p1Dist(:,1) = sqrt(sum((affiniX(:,1:3) - p1Seed).^2,2));
-        p2Dist(:,1) = sqrt(sum((affiniY(:,1:3) - p2Seed).^2,2));
+        p1Dist(:,1) = sqrt(sum(((affiniX(:,1:3) - p1Seed).^2),2));
+        p2Dist(:,1) = sqrt(sum(((affiniY(:,1:3) - p2Seed).^2),2));
      
                        
         % Calcolo distanza minima tra regioni e nuovo seed
