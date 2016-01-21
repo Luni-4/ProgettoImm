@@ -4,9 +4,9 @@
     img2 = imread('images/cars1_02.jpg');
     
     % Riduzione di 1/4 per fattori computazionali
-    %resize = 1;   
-   % img1 = imresize(img1, resize);
-    %img2 = imresize(img2, resize);
+    resize = 1/2;   
+    img1 = imresize(img1, resize);
+    img2 = imresize(img2, resize);
     
     % Trasformazione in scala di grigio e a valori double per poter essere forniti in input
     % al calcolatore di flusso ottico
@@ -41,8 +41,8 @@
         for i=1:numregioni
             [xt,yt]=find(regioni == i);
             [Axi, Ayi, uS, vS] = affine(u(regioni==i),v(regioni==i),xt,yt);
-            uStimato(regioni == i)=uS;
-            vStimato(regioni == i)=vS;
+            uStimato(regioni == i)= uS;
+            vStimato(regioni == i)= vS;
             if errorStima(u(regioni==i),v(regioni==i),uS,vS,threshold) == 1
                   affiniX(i,1:3)=Axi'; % Salvataggio dei parametri affini delle x
                   affiniX(i,4)=i; % Salvataggio della regione          

@@ -13,7 +13,7 @@ while(true)
     % Calcolo il seed del primo centro, ossia l'equazione della retta con
     % cui vorrei approssimare le rette trovate precedentemente
     p1Media = median(affiniX(:,1:3),1);
-    p2Media = median(affiniY(:,1:3),1);
+    p2Media = median(affiniY(:,1:3),1); 
     
     % Uso i valori trovati come coordinate punto seed
     p1Seed = p1Media;
@@ -32,8 +32,8 @@ while(true)
         if(exist('p1Dist','var'))
                clearvars p1Dist; 
                clearvars p2Dist; 
-        end
-        p1Dist(:,1) = sqrt(sum(((affiniX(:,1:3) - p1Seed).^2),2));
+        end      
+        p1Dist(:,1) = sqrt(sum((affiniX(:,1:3) - p1Seed).^2));
         p2Dist(:,1) = sqrt(sum(((affiniY(:,1:3) - p2Seed).^2),2));
      
                        
