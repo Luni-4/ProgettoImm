@@ -1,7 +1,7 @@
 %function AffineMotion(u,v)
     % Caricamento dei frame
-    img1 = imread('images/cars1_01.jpg');
-    img2 = imread('images/cars1_02.jpg');
+    img1 = imread('images/cars1_05.jpg');
+    img2 = imread('images/cars1_06.jpg');
     
     % Riduzione di 1/4 per fattori computazionali
     resize = 1/2;   
@@ -10,8 +10,8 @@
     
     % Trasformazione in scala di grigio e a valori double per poter essere forniti in input
     % al calcolatore di flusso ottico
-    img1 = double(rgb2gray(img1));
-    img2 = double(rgb2gray(img2));
+   img1 = double(rgb2gray(img1));
+   img2 = double(rgb2gray(img2));
     
     % Funzione che calcola flusso ottico tra 2 immagini e restituisce
     % derivata lungo le x,y e tempo più vettori di flusso ottico   
@@ -37,7 +37,7 @@
         regioniScartateX=affiniX; %Matrice usata per salvare parametri affini scartati x e regione associata
         regioniScartateY=affiniY; %Matrice usata per salvare parametri affini scartati y e regione associata
 
-        threshold=1; %impostare soglia per eliminazione di valori troppo alti
+        threshold=50; %impostare soglia per eliminazione di valori troppo alti
         for i=1:numregioni
             [xt,yt]=find(regioni == i);
             [Axi, Ayi, uS, vS] = affine(u(regioni==i),v(regioni==i),xt,yt);
