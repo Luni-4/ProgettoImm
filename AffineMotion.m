@@ -1,7 +1,7 @@
 %function AffineMotion(u,v)
     % Caricamento dei frame
-    img1 = imread('images/frame01.png');
-    img2 = imread('images/frame02.png');
+    img1 = imread('images/cars1_01.jpg');
+    img2 = imread('images/cars1_02.jpg');
     
     % Riduzione di 1/4 per fattori computazionali
     resize = 1/2;   
@@ -71,7 +71,7 @@
         [ccp1,ccp2]= kmean_adattivo(affiniX,affiniY);
         
         %Assegnameno regioni a cluster più vicino
-        [newAffiniX, newAffiniY, newRegioni] = assegnaCluster(affiniX, affiniY, ccp1,ccp2,regioni);
+        [newRegioni] = assegnaCluster(u, v, ccp1,ccp2,regioni);
 
 %         % Elimino pixel con errore troppo alto da regioni 
 %         newRegioni = residualError(newRegioni,newAffiniX,newAffiniY,u,v);

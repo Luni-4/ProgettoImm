@@ -12,13 +12,9 @@ while(true)
     
     % Calcolo il seed del primo centro, ossia l'equazione della retta con
     % cui vorrei approssimare le rette trovate precedentemente
-<<<<<<< HEAD
-    p1Media = median(affiniX(:,1:3),1);
-    p2Media = median(affiniY(:,1:3),1); 
-=======
     p1Media = mean(affiniX(:,1:3),1);
     p2Media = mean(affiniY(:,1:3),1);
->>>>>>> origin/master
+
     
     % Uso i valori trovati come coordinate punto seed
     p1Seed = p1Media;
@@ -38,20 +34,23 @@ while(true)
                clearvars p1Dist; 
                clearvars p2Dist; 
         end      
-        p1Dist(:,1) = sqrt(sum((affiniX(:,1:3) - p1Seed).^2));
+        p1Dist(:,1) = sqrt(sum(((affiniX(:,1:3) - p1Seed).^2),2));
         p2Dist(:,1) = sqrt(sum(((affiniY(:,1:3) - p2Seed).^2),2));
      
                        
         % Calcolo distanza minima tra regioni e nuovo seed
         p1Dist_bw = sqrt((sum(sum((affiniX(:,1:3) - p1Seed).^2,2),1))/size(affiniX,1));
-        p2Dist_bw = sqrt((sum(sum((affiniY(:,1:3) - p2Seed).^2,2),1))/size(affiniY,1));
+        p2Dist_bw = sqrt((sum(sum((affiniY(:,1:3) - p2Seed).^2,2),1))/size(affiniX,1));
             
         % Controllo che i valori siano nell'ampiezza di banda di interesse
         if(exist('valori_ok','var'))
                clearvars  valori_ok; 
         end
         valori_ok(:,1) = p1Dist(:)<p1Dist_bw;
-        valori_ok(:,1) = p2Dist(:)<p2Dist_bw;
+        valori_ok(:,2) = p2Dist(:)<p2Dist_bw;
+        valori_ok = sum(valori_ok,2);
+        valori_ok(valori_ok>0) = 1;
+        valori_ok = logical(valori_ok);
             
         % Aggiorno il seed
         p1NewSeed = mean(affiniX(valori_ok,1:3),1);
