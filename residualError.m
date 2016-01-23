@@ -1,29 +1,34 @@
-function [newRegioni] = residualError(newRegioni,newAffiniX,newAffiniY,u,v)
+function [newRegioni] = residualError(newRegioni,distanza,th)
 
-  %Trovo valori u e v delle regioni
-  uStimato = (sum(newAffiniX(:,1:3),2));
-  vStimato = (sum(newAffiniY(:,1:3),2));
-  
-  %Preparo matrici per errore
-  sz = size(newRegioni);
-  errX = zeros(sz);
-  errY = errX;
-  
-  %Calcolo errore 
-  for i=1:size(newAffiniX,1)
-      errX(newRegioni==i) = u(newRegioni==i)-uStimato(i);
-      errY(newRegioni==i) = v(newRegioni==i)-vStimato(i);
+  % Se non viene restituito nessun valore di th, imposto ad 1 
+  if nargin<3
+    th =1;
   end
-  
-%   err = (errX+errY)./2;
-  
-  %Se errore troppo grande, elimino pixel da regione
-  daScartareX = errX>=1;
-  daScartareY = errY>=1;
+
+  % Elimino valori supperiori distanza th
+  newRegioni(distanza>=th) = 0;
     
-  %Aggiorno regioni
-  newRegioni(daScartareX) = 0;
-  newRegioni(daScartareY) = 0;
+  
+%   %Preparo matrici per errore
+%   sz = size(newRegioni);
+%   errX = zeros(sz);
+%   errY = errX;
+%   
+%   %Calcolo errore 
+%   for i=1:size(newAffiniX,1)
+%       errX(newRegioni==i) = u(newRegioni==i)-uStimato(i);
+%       errY(newRegioni==i) = v(newRegioni==i)-vStimato(i);
+%   end
+%   
+% %   err = (errX+errY)./2;
+%   
+%   %Se errore troppo grande, elimino pixel da regione
+%   daScartareX = errX>=1;
+%   daScartareY = errY>=1;
+%     
+%   %Aggiorno regioni
+%   newRegioni(daScartareX) = 0;
+%   newRegioni(daScartareY) = 0;
   
     
 end

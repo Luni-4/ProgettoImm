@@ -4,7 +4,7 @@
     img2 = imread('images/cars1_02.jpg');
     
     % Riduzione di 1/4 per fattori computazionali
-    resize = 1/2;   
+    resize = 1/4;   
     img1 = imresize(img1, resize);
     img2 = imresize(img2, resize);
     
@@ -70,10 +70,10 @@
         [ccp1,ccp2]= kmean_adattivo(affiniX,affiniY);
         
         %Assegnameno regioni a cluster più vicino
-        [newRegioni] = assegnaCluster(u, v, ccp1,ccp2,regioni);
+        [newRegioni,distanza] = assegnaCluster(u, v, ccp1,ccp2,regioni);
 
-%         % Elimino pixel con errore troppo alto da regioni 
-%         newRegioni = residualError(newRegioni,newAffiniX,newAffiniY,u,v);
+        % Elimino pixel con errore troppo alto da regioni 
+        newRegioni = residualError(newRegioni,distanza);
         
         % Separo le regioni non connesse
         newRegioni_2 = separaRegioni(newRegioni);

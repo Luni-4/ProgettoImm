@@ -1,4 +1,4 @@
-function [newRegioni]  = assegnaCluster(u,v,ccp1,ccp2,regioni)
+function [newRegioni,distanzaMin]  = assegnaCluster(u,v,ccp1,ccp2,regioni)
     %% Ottengo un'immagine clusterizzata
     
 
@@ -70,7 +70,7 @@ function [newRegioni]  = assegnaCluster(u,v,ccp1,ccp2,regioni)
     distanza = (uDist-vDist)./2;
     
     %Assegno ogni punto al cluster più vicino
-    [~,cluster_assegnamento] = min(distanza,[],3);
+    [distanzaMin,cluster_assegnamento] = min(distanza,[],3);
 
     % Riordino la numerazione delle regioni prima kmeans
     vecchiValori = unique(regioni);
