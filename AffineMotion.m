@@ -26,16 +26,14 @@
         %Suddivisione di flusso ottico in regioni   
         if iterazione == 0
             [regioni, numregioni] = Image20x20Subdivider(u);
-        end
-             
+        end             
 
 
-        affiniX=zeros(numregioni,4); %Matrice usata per salvare parametri affini x e regione associata
-        affiniY=zeros(numregioni,4); %Matrice usata per salvare parametri affini y e regione associata
+        affini = zeros(numregioni,7); %Matrice usata per salvare parametri affini e regione ad essi associata
         uStimato=u; %Vettore usato per salvare flusso ottico stimato lungo le x
         vStimato=v; %Vettore usato per salvare flusso stimato lungo le y
-        regioniScartateX=affiniX; %Matrice usata per salvare parametri affini scartati x e regione associata
-        regioniScartateY=affiniY; %Matrice usata per salvare parametri affini scartati y e regione associata
+        %regioniScartateX=affiniX; %Matrice usata per salvare parametri affini scartati x e regione associata
+        %regioniScartateY=affiniY; %Matrice usata per salvare parametri affini scartati y e regione associata
 
         threshold=50; %impostare soglia per eliminazione di valori troppo alti
         for i=1:numregioni
@@ -43,29 +41,30 @@
             [Axi, Ayi, uS, vS] = affine(u(regioni==i),v(regioni==i),xt,yt);
             uStimato(regioni == i)= uS;
             vStimato(regioni == i)= vS;
-            if errorStima(u(regioni==i),v(regioni==i),uS,vS,threshold) == 1
-                  affiniX(i,1:3)=Axi'; % Salvataggio dei parametri affini delle x
-                  affiniX(i,4)=i; % Salvataggio della regione          
-                  affiniY(i,1:3)=Ayi'; % Salvataggio dei parametri affini della y
-                  affiniY(i,4)=i;  
-            else
-                  regioniScartateX(i,1:3)=Axi'; % Salvataggio dei parametri affini delle x
-                  regioniScartateX(i,4)=i; % Salvataggio della regione          
-                  regioniScartateY(i,1:3)=Ayi'; % Salvataggio dei parametri affini della y
-                  regioniScartateY(i,4)=i;  
-                  regioni(regioni == i)=0; %Regioni scartate vengono poste al valore 0
+            if errorStima(u(regioni==i),v(regioni==i),uS,vS,threshold) == 1        
+                  affini(i, 1:3) = Axi';  % Salvataggio dei parametri affini delle x
+                  affini(i, 4:6) = Ayi'; % Salvataggio dei parametri affini della y
+                  affini(i,7) = i; % Salvataggio della regione a cui sono associati 
             end
+            %else
+                  %regioniScartateX(i,1:3)=Axi'; % Salvataggio dei parametri affini delle x
+                  %regioniScartateX(i,4)=i; % Salvataggio della regione          
+                  %regioniScartateY(i,1:3)=Ayi'; % Salvataggio dei parametri affini della y
+                  %regioniScartateY(i,4)=i;  
+                  %regioni(regioni == i)=0; %Regioni scartate vengono poste al valore 0
+            %end
 
         end     
 
 
-        %Eliminazione di valori affini che non hanno superato la soglia
-        affiniX((affiniX(:,4)==0),:)=[];
-        affiniY((affiniY(:,4)==0),:)=[];  
+        %Eliminazione di valori affini che non hanno superato la soglia        
+        affini((affini(:,7) ==0),:) = [];
 
         %Ripulitura vettori delle regioni scartati
-        regioniScartateX((regioniScartateX(:,4)==0),:)=[];
-        regioniScartateY((regioniScartateY(:,4)==0),:)=[];    
+        %regioniScartateX((regioniScartateX(:,4)==0),:)=[];
+       % regioniScartateY((regioniScartateY(:,4)==0),:)=[];
+       
+       
 
         %Kmeans adattivo
         [ccp1,ccp2]= kmean_adattivo(affiniX,affiniY);
