@@ -1,4 +1,4 @@
-%function AffineMotion(u,v)
+%function AffineMotion(u,v, prima)
     % Caricamento dei frame
     img1 = imread('images/cars1_01.jpg');
     img2 = imread('images/cars1_02.jpg');
@@ -21,12 +21,12 @@
     
     iterazione=0; %Variabile che salva numero di iterazioni compiute su frame
     
-    %while iterazione <= 20 % Ciclare fino ad un numero euristico di iterazioni
+    %Suddivisione di flusso ottico in regioni   
+    if iterazione == 0 %&& prima == true
+          [regioni, numregioni] = Image20x20Subdivider(u);
+     end   
     
-        %Suddivisione di flusso ottico in regioni   
-        if iterazione == 0
-            [regioni, numregioni] = Image20x20Subdivider(u);
-        end             
+    %while iterazione <= 20 % Ciclare fino ad un numero euristico di iterazioni           
 
 
         affini = zeros(numregioni,7); %Matrice usata per salvare parametri affini e regione ad essi associata

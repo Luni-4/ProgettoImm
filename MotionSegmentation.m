@@ -13,17 +13,49 @@ video = VideoReader(filename);
 % di noise
 opticFlow = opticalFlowLK('NoiseThreshold', 0.05);
 
+% Lettura primo frame viene posta fuori dal ciclo per evitare che
+% AffineMotion calcoli layer tra primo frame e frame precedente (immagine
+% nera) aggiunta da implementazione del Lucas-Kanadae
+   
+% Lettura del primo frame del video
+frameRGBCurrent = readFrame(video);
+    
+% Conversione del primo frame in scala di grigio
+frameGrayCurrent = rgb2gray(frameRGBCurrent);
+    
+% Calcolo del flusso ottico tra primo frame e frame precedente (immagine
+% nera)
+flow = estimateFlow(opticFlow, frameGrayCurrent);
+
+% Salvataggio frame corrente da usare in iterazione successiva per
+% funzione di warping
+framePrevious = frameGrayCurrent;
+
+%Variabile che definisce se è prima iterazione AffineMotion sui due frame
+%iniziali 
+prima = true;
+
 % Ciclare finché non ci sono più frame disponibili
 while hasFrame(video)
-    % Lettura dei frame del video
-    frameRGB = readFrame(video);
     
-    % Conversione frame in scala di grigio
-    frameGray = rgb2gray(frameRGB);
+    % Lettura del frame corrente del video
+    frameRGBCurrent = readFrame(video);
     
-    % Calcolo del flusso ottico tra due frame
-    flow = estimateFlow(opticFlow, frameGray);
+    % Conversione frame corrente in scala di grigio
+    frameGrayCurrent = rgb2gray(frameRGBCurrent);
     
-    %AffineMotion(flow.Vx,flow.Vy);
+    % Calcolo del flusso ottico tra frame corrente e frame precedente
+    flow = estimateFlow(opticFlow, frameGrayCurrent);
     
+   
+     % Modelli di movimento calcolati da funzione AffineMotion
+     %[layer , modelli] = AffineMotion(flow.Vx,flow.Vy, prima);
+     % layer = Warping(framePrevious, frameGrayCurrent, modelli, layer); 
+    
+    % Finita prima iterazione, variabile logica prima viene posta a false    
+    prima = false;
+    
+    % Salvataggio frame corrente da usare in iterazione successiva per
+    % funzione di warping
+    framePrevious = frameGrayCurrent;    
 end
