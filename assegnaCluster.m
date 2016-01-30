@@ -72,21 +72,21 @@ function [newRegioni,distanzaMin]  = assegnaCluster(u,v,cc,regioni)
 %     distanza = (uDist-vDist)./2;
     
     %Assegno ogni punto al cluster più vicino
-    [distanzaMin,cluster_assegnamento] = min(distanza,[],3);
+    [distanzaMin,newRegioni] = min(distanza,[],3);
 
-    % Riordino la numerazione delle regioni prima kmeans
-    vecchiValori = unique(regioni);
-    for i=0:(size(vecchiValori,1))-1
-
-        regioni(regioni == vecchiValori(i+1,1)) = i;
-    end
-        
-    % Ricostruisco l'immagine, sostituendo ad ogni regione il numero del cluster di cui fa parte 
-    newRegioni = zeros(size(regioni,1),size(regioni,2));
-
-    for i=1:size(cluster_assegnamento,1);
-        newRegioni(regioni==i) = cluster_assegnamento(i,1);    
-    end
+%     % Riordino la numerazione delle regioni prima kmeans
+%     vecchiValori = unique(regioni);
+%     for i=0:(size(vecchiValori,1))-1
+% 
+%         regioni(regioni == vecchiValori(i+1,1)) = i;
+%     end
+%         
+%     % Ricostruisco l'immagine, sostituendo ad ogni regione il numero del cluster di cui fa parte 
+%     newRegioni = zeros(size(regioni,1),size(regioni,2));
+% 
+%     for i=1:size(cluster_assegnamento,1);
+%         newRegioni(regioni==i) = cluster_assegnamento(i,1);    
+%     end
 
 %     % PRmetri affini per ogni regione
 %     newAffiniX = zeros(size(ccp1,3),4);

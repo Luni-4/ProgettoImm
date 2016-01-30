@@ -35,7 +35,7 @@
         %regioniScartateX=affiniX; %Matrice usata per salvare parametri affini scartati x e regione associata
         %regioniScartateY=affiniY; %Matrice usata per salvare parametri affini scartati y e regione associata
 
-        threshold=10; %impostare soglia per eliminazione di valori troppo alti
+        threshold=1; %impostare soglia per eliminazione di valori troppo alti
         for i=1:numregioni
             [xt,yt]=find(regioni == i);
             [Axi, Ayi, uS, vS] = affine(u(regioni==i),v(regioni==i),xt,yt);
@@ -74,8 +74,10 @@
         %Assegnameno regioni a cluster più vicino
         [newRegioni,distanza] = assegnaCluster(u, v,cc,regioni);
 
-        % Elimino pixel con errore troppo alto da regioni 
-        newRegioni = residualError(newRegioni,distanza);
+        % Elimino pixel con errore troppo alto da regioni
+        % th rappresenta errore massimo
+        th=1;
+        newRegioni = residualError(newRegioni,distanza,th);
         
         % Separo le regioni non connesse
         newRegioni_2 = separaRegioni(newRegioni);
