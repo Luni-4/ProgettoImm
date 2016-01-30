@@ -35,7 +35,7 @@
         %regioniScartateX=affiniX; %Matrice usata per salvare parametri affini scartati x e regione associata
         %regioniScartateY=affiniY; %Matrice usata per salvare parametri affini scartati y e regione associata
 
-        threshold=50; %impostare soglia per eliminazione di valori troppo alti
+        threshold=10; %impostare soglia per eliminazione di valori troppo alti
         for i=1:numregioni
             [xt,yt]=find(regioni == i);
             [Axi, Ayi, uS, vS] = affine(u(regioni==i),v(regioni==i),xt,yt);
@@ -67,10 +67,12 @@
        
 
         %Kmeans adattivo
-        [ccp1,ccp2]= kmean_adattivo(affiniX,affiniY);
+        % Th rappresenta distanza massima tra centri(0.75)
+        th=0.75;
+        [cc]= kmean_adattivo(affini,th);
         
         %Assegnameno regioni a cluster più vicino
-        [newRegioni,distanza] = assegnaCluster(u, v, ccp1,ccp2,regioni);
+        [newRegioni,distanza] = assegnaCluster(u, v,cc,regioni);
 
         % Elimino pixel con errore troppo alto da regioni 
         newRegioni = residualError(newRegioni,distanza);
