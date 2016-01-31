@@ -3,11 +3,16 @@ function nuoveRegioni = filtroRegioni(vecchieRegioni)
 
 nuoveRegioni = vecchieRegioni;
 
+ % Trovare regioni
+ reg = unique(vecchieRegioni);
+    
+  % Eliminare regione contenente pixel scartati da analisi
+  reg=reg(2:size(reg,1));
 
 
-    for i=1:numel(unique(vecchieRegioni))-1
-        
-        if((sum(vecchieRegioni(vecchieRegioni==i)))<=250)
+    for i=1:numel(reg)
+        conto = vecchieRegioni(vecchieRegioni==i);
+        if (sum(conto)<=250)
             
             nuoveRegioni(vecchieRegioni==i) = 0;
         

@@ -17,7 +17,13 @@ function nuoveRegioni = separaRegioni(vecchieRegioni)
        
         label = bwlabel(vecchieRegioni == i);
         
-        for k=1:numel(unique(label))            
+        % Trovare sottoregioni
+        reg1 = unique(label);
+    
+        % Eliminare sottoregione contenente pixel di altre regioni
+        reg1=reg1(2:size(reg1,1));
+        
+        for k=1:numel(reg1)            
             % Inserire le regioni separate come nuove regioni
             nuoveRegioni(label==k) = nRegioni;
             
