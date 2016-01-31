@@ -7,6 +7,13 @@ function [newRegioni] = residualError(newRegioni,distanza,th)
 
   % Elimino valori supperiori distanza th
   newRegioni(distanza>=th) = 0;
+  
+    % Riordino la numerazione delle regioni prima kmeans
+    vecchiValori = unique(newRegioni);
+    for i=0:(size(vecchiValori,1))-1
+
+        newRegioni(newRegioni == vecchiValori(i+1,1)) = i;
+    end
     
   
 %   %Preparo matrici per errore

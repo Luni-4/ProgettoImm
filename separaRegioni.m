@@ -1,12 +1,13 @@
 function nuoveRegioni = separaRegioni(vecchieRegioni)
 %Separa le regioni non adiacenti, e restituisce immagine con nuove label
 
-    nuoveRegioni = vecchieRegioni;
+    sz = size(vecchieRegioni);
+    nuoveRegioni = zeros(sz);
     %Contatore regioni
-    nRegioni = numel(unique(vecchieRegioni));
+    nRegioni = 1;
     
     
-    for i=1:numel(unique(vecchieRegioni))
+    for i=1:numel(unique(vecchieRegioni))-1
        
         label = bwlabel(vecchieRegioni==i);
         
