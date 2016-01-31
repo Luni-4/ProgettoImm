@@ -3,7 +3,7 @@ function visualizzaOpticalFlow
 %% Funzione per testing
 %Set up objects.
 
-videoReader = vision.VideoFileReader('images/cars1.avi','ImageColorSpace','Intensity','VideoOutputDataType','uint8');
+videoReader = vision.VideoFileReader('videos/cars1.avi','ImageColorSpace','Intensity','VideoOutputDataType','uint8');
 converter = vision.ImageDataTypeConverter; 
 opticalFlow = vision.OpticalFlow('ReferenceFrameDelay', 1);
 opticalFlow.Method = 'Lucas-Kanade';
@@ -26,7 +26,7 @@ while ~isDone(videoReader)
     pause(2);
 end
 
-
+%
 %% Close the video reader and player
 
 % release(videoPlayer);

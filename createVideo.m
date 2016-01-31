@@ -1,4 +1,11 @@
 function createVideo(filename)
+
+%
+    if nargin<1
+        filename = input('Inserisci nome video: ','s');
+    end
+
+
     % Funzione per la scelta della serie di immagini
     imgnames = pickImages();
 

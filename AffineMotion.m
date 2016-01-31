@@ -38,9 +38,7 @@
         affini = zeros(numregioni,7); %Matrice usata per salvare parametri affini e regione ad essi associata
         uStimato=u; %Vettore usato per salvare flusso ottico stimato lungo le x
         vStimato=v; %Vettore usato per salvare flusso stimato lungo le y
-        %regioniScartateX=affiniX; %Matrice usata per salvare parametri affini scartati x e regione associata
-        %regioniScartateY=affiniY; %Matrice usata per salvare parametri affini scartati y e regione associata
-
+       
         threshold=1; %impostare soglia per eliminazione di valori troppo alti
         for i=1:numregioni
             [xt,yt]=find(regioni == i);
@@ -52,30 +50,24 @@
                   affini(i, 4:6) = Ayi'; % Salvataggio dei parametri affini della y
                   affini(i,7) = i; % Salvataggio della regione a cui sono associati 
             end
-            %else
-                  %regioniScartateX(i,1:3)=Axi'; % Salvataggio dei parametri affini delle x
-                  %regioniScartateX(i,4)=i; % Salvataggio della regione          
-                  %regioniScartateY(i,1:3)=Ayi'; % Salvataggio dei parametri affini della y
-                  %regioniScartateY(i,4)=i;  
-                  %regioni(regioni == i)=0; %Regioni scartate vengono poste al valore 0
-            %end
-
-        end     
+        end
 
 
         %Eliminazione di valori affini che non hanno superato la soglia        
-        affini((affini(:,7) ==0),:) = [];
-
-        %Ripulitura vettori delle regioni scartati
-        %regioniScartateX((regioniScartateX(:,4)==0),:)=[];
-       % regioniScartateY((regioniScartateY(:,4)==0),:)=[];
+        affini((affini(:,7) ==0),:) = [];       
        
        
-
-        %Kmeans adattivo
-        % Th rappresenta distanza massima tra centri(0.75)
-        th=0.75;
-        [cc]= kmean_adattivo(affini,th);
+    %Kmenas classico
+    % nCentri rappresenta il numero di cluster resistuiti
+%     nCentri = input('Inserite il numero di regioni da trovare: ');
+    nCentri =  100;
+    cc = kmeansClassico(affini,nCentri);
+    
+       
+%         %Kmeans adattivo
+%         % Th rappresenta distanza massima tra centri(0.75)
+%         th=0.75;
+%         [cc]= kmean_adattivo(affini,th);
         
         %Assegnameno regioni a cluster più vicino
         [regioni,distanza] = assegnaCluster(u, v,cc,regioni);
@@ -123,3 +115,4 @@
 %         imshow(newRegioni_2,[]);
 %         title(['Dopo separa regioni e filtro, cluster= ', num2str(numel(unique(newRegioni_2))), '.']);
 %end
+%
