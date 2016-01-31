@@ -3,6 +3,8 @@ function nuoveRegioni = filtroRegioni(vecchieRegioni)
 
 nuoveRegioni = vecchieRegioni;
 
+
+
     for i=1:numel(unique(vecchieRegioni))-1
         
         if((sum(vecchieRegioni(vecchieRegioni==i)))<=250)

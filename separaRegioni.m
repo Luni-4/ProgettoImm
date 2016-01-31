@@ -1,21 +1,27 @@
 function nuoveRegioni = separaRegioni(vecchieRegioni)
 %Separa le regioni non adiacenti, e restituisce immagine con nuove label
-
-    sz = size(vecchieRegioni);
-    nuoveRegioni = zeros(sz);
+    
+    % Definizione di matrice che conterrà nuove regioni
+    nuoveRegioni = zeros(size(vecchieRegioni));
+    
     %Contatore regioni
     nRegioni = 1;
     
+    % Trovare regioni
+    reg = unique(vecchieRegioni);
     
-    for i=1:numel(unique(vecchieRegioni))-1
+    % Eliminare regione contenente pixel scartati da analisi
+    reg=reg(2:size(reg,1));
+    
+    for i=1:numel(reg)
        
-        label = bwlabel(vecchieRegioni==i);
+        label = bwlabel(vecchieRegioni == i);
         
-        for k=1:numel(unique(label))
-            
-            %Inserisco le regioni separate come nuove regioni
+        for k=1:numel(unique(label))            
+            % Inserire le regioni separate come nuove regioni
             nuoveRegioni(label==k) = nRegioni;
-            %Aumento contatore
+            
+            % Aumentare contatore
             nRegioni = nRegioni+1;
         end
     
