@@ -11,8 +11,9 @@ nuoveRegioni = vecchieRegioni;
 
 
     for i=1:numel(reg)
-        conto = vecchieRegioni(vecchieRegioni==i);
-        if (sum(conto)<=250)
+        conto = vecchieRegioni(vecchieRegioni == reg(i));
+        conto = sum(conto);
+        if (conto <= 250)
             
             nuoveRegioni(vecchieRegioni==i) = 0;
         

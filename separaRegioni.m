@@ -15,7 +15,7 @@ function nuoveRegioni = separaRegioni(vecchieRegioni)
     
     for i=1:numel(reg)
        
-        label = bwlabel(vecchieRegioni == i);
+        label = bwlabel(vecchieRegioni == reg(i));
         
         % Trovare sottoregioni
         reg1 = unique(label);
@@ -25,7 +25,7 @@ function nuoveRegioni = separaRegioni(vecchieRegioni)
         
         for k=1:numel(reg1)            
             % Inserire le regioni separate come nuove regioni
-            nuoveRegioni(label==k) = nRegioni;
+            nuoveRegioni(label == reg1(k)) = nRegioni;
             
             % Aumentare contatore
             nRegioni = nRegioni+1;
