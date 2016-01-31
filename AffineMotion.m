@@ -24,10 +24,16 @@
     %Suddivisione di flusso ottico in regioni   
     if iterazione == 0 %&& prima == true
           [regioni, numregioni] = Image20x20Subdivider(u);
-     end   
+    end   
+     
+%     figure(1);
+%     imshow(img1,[]);
+%     title('Immagine originale.');
     
-    %while iterazione <= 20 % Ciclare fino ad un numero euristico di iterazioni           
+    while iterazione < 20 % Ciclare fino ad un numero euristico di iterazioni           
 
+        % Durata esecuzione ciclo
+        tic;
 
         affini = zeros(numregioni,7); %Matrice usata per salvare parametri affini e regione ad essi associata
         uStimato=u; %Vettore usato per salvare flusso ottico stimato lungo le x
@@ -72,35 +78,48 @@
         [cc]= kmean_adattivo(affini,th);
         
         %Assegnameno regioni a cluster più vicino
-        [newRegioni,distanza] = assegnaCluster(u, v,cc,regioni);
+        [regioni,distanza] = assegnaCluster(u, v,cc,regioni);
 
         % Elimino pixel con errore troppo alto da regioni
         % th rappresenta errore massimo
         th=1;
-        newRegioni = residualError(newRegioni,distanza,th);
+        regioni = residualError(regioni,distanza,th);
         
         % Separo le regioni non connesse
-        newRegioni_2 = separaRegioni(newRegioni);
+        regioni = separaRegioni(regioni);
         
         % Elimino regioni troppo piccole
-        newRegioni_2 = filtroRegioni(newRegioni_2);
+        regioni = filtroRegioni(regioni);
         
+        % Aggiorno contatore numero regioni
+        numregioni = numel(unique(regioni));
         
-        subplot(2,2,1);
-         imshow(img1,[]);
-         title('Immagine partenza.'); 
+        % Incremento Contatore
+        iterazione = iterazione +1;
         
-        subplot(2,2,2);
-         imshow(regioni,[]);
-         title(['Prima kmeans, cluster= ', num2str(numel(unique(regioni))), '.']);
-    
-        subplot(2,2,3);
-        imshow(newRegioni,[]);
-        title(['Dopo kmeans, cluster= ', num2str(numel(unique(newRegioni))), '.']);
+        toc;
         
-        subplot(2,2,4);
-        imshow(newRegioni_2,[]);
-        title(['Dopo separa regioni e filtro, cluster= ', num2str(numel(unique(newRegioni_2))), '.']);
+        % Mostro risultato iterazione
+        figure(1);
+        subplot(4,5,iterazione)
+        imshow(regioni,[]);
+        title(['Iterazione ', num2str(iterazione),', cluster: ',num2str(numregioni),'.']);
  
-    %end % Fine iterazioni singolo frame
+    end % Fine iterazioni singolo frame
+    
+%      subplot(2,2,1);
+%          imshow(img1,[]);
+%          title('Immagine partenza.'); 
+%         
+%         subplot(2,2,2);
+%          imshow(regioni,[]);
+%          title(['Prima kmeans, cluster= ', num2str(numel(unique(regioni))), '.']);
+%     
+%         subplot(2,2,3);
+%         imshow(newRegioni,[]);
+%         title(['Dopo kmeans, cluster= ', num2str(numel(unique(newRegioni))), '.']);
+%         
+%         subplot(2,2,4);
+%         imshow(newRegioni_2,[]);
+%         title(['Dopo separa regioni e filtro, cluster= ', num2str(numel(unique(newRegioni_2))), '.']);
 %end

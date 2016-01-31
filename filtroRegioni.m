@@ -12,4 +12,12 @@ nuoveRegioni = vecchieRegioni;
         end
         
     end
+    
+    % Riordino la numerazione delle regioni prima kmeans
+    vecchiValori = unique(nuoveRegioni);
+    for i=0:(size(vecchiValori,1))-1
+
+        nuoveRegioni(nuoveRegioni == vecchiValori(i+1,1)) = i;
+    end
+    
 end
