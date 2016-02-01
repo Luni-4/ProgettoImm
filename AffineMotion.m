@@ -26,10 +26,7 @@
           [regioni, numregioni] = Image20x20Subdivider(u);
     end   
      
-%     figure(1);
-%     imshow(img1,[]);
-%     title('Immagine originale.');
-    
+
     while iterazione < 20 % Ciclare fino ad un numero euristico di iterazioni           
 
         % Durata esecuzione ciclo
@@ -57,17 +54,17 @@
         affini((affini(:,7) ==0),:) = [];       
        
        
-    %Kmenas classico
-    % nCentri rappresenta il numero di cluster resistuiti
-%     nCentri = input('Inserite il numero di regioni da trovare: ');
-    nCentri =  10;
-    cc = kmeansClassico(affini,nCentri);
-    
+%     %Kmenas classico
+%     % nCentri rappresenta il numero di cluster resistuiti
+%     % nCentri = input('Inserite il numero di regioni da trovare: ');
+%     nCentri =  10;
+%     cc = kmeansClassico(affini,nCentri);
+%     
        
-%         %Kmeans adattivo
-%         % Th rappresenta distanza massima tra centri(0.75)
-%         th=0.75;
-%         [cc]= kmean_adattivo(affini,th);
+        %Kmeans adattivo
+        % Th rappresenta distanza massima tra centri(0.75)
+        th=0.75;
+        [cc]= kmean_adattivo(affini,th);
         
         %Assegnameno regioni a cluster più vicino
         [regioni,distanza] = assegnaCluster(u, v,cc,regioni);
@@ -94,23 +91,8 @@
         subplot(4,5,iterazione)
         imshow(regioni,[]);
         title(['Iterazione ', num2str(iterazione),', cluster: ',num2str(numregioni),'.']);
+        
  
     end % Fine iterazioni singolo frame
     
-%      subplot(2,2,1);
-%          imshow(img1,[]);
-%          title('Immagine partenza.'); 
-%         
-%         subplot(2,2,2);
-%          imshow(regioni,[]);
-%          title(['Prima kmeans, cluster= ', num2str(numel(unique(regioni))), '.']);
-%     
-%         subplot(2,2,3);
-%         imshow(newRegioni,[]);
-%         title(['Dopo kmeans, cluster= ', num2str(numel(unique(newRegioni))), '.']);
-%         
-%         subplot(2,2,4);
-%         imshow(newRegioni_2,[]);
-%         title(['Dopo separa regioni e filtro, cluster= ', num2str(numel(unique(newRegioni_2))), '.']);
 %end
-%
