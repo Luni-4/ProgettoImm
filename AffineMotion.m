@@ -60,7 +60,7 @@
     %Kmenas classico
     % nCentri rappresenta il numero di cluster resistuiti
 %     nCentri = input('Inserite il numero di regioni da trovare: ');
-    nCentri =  100;
+    nCentri =  10;
     cc = kmeansClassico(affini,nCentri);
     
        
@@ -81,10 +81,8 @@
         regioni = separaRegioni(regioni);
         
         % Elimino regioni troppo piccole
-        regioni = filtroRegioni(regioni);
-        
-        % Aggiorno contatore numero regioni
-        numregioni = numel(unique(regioni));
+        [regioni, numregioni] = filtroRegioni(regioni);       
+ 
         
         % Incremento Contatore
         iterazione = iterazione +1;

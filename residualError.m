@@ -1,4 +1,4 @@
-function newRegioni = residualError(newRegioni,distanza,th)
-  % Elimino valori supperiori distanza th
-  newRegioni(distanza >= th) = 0;    
+function newRegioni = residualError(regioni,distanza,th)
+  regioni(distanza > th) = 0; 
+  newRegioni = regioni;
 end
