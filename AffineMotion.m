@@ -61,10 +61,14 @@
 %     cc = kmeansClassico(affini,nCentri);
 %     
        
-        %Kmeans adattivo
-        % Th rappresenta distanza massima tra centri(0.75)
-        th=0.75;
-        [cc]= kmean_adattivo(affini,th);
+%         %Kmeans adattivo
+%         % Th rappresenta distanza massima tra centri(0.75)
+%         th=0.75;
+%         [cc]= kmean_adattivo(affini,th);
+        
+        %Kmeans di matlab
+        k = size(affini,1)/2;
+        [indx, cc] =kmeans(affini(:,1:6),k);
         
         %Assegnameno regioni a cluster più vicino
         [regioni,distanza] = assegnaCluster(u, v,cc,regioni);
@@ -88,7 +92,7 @@
         
         % Mostro risultato iterazione
         figure(1);
-        subplot(4,5,iterazione)
+%         subplot(4,5,iterazione)
         imshow(regioni,[]);
         title(['Iterazione ', num2str(iterazione),', cluster: ',num2str(numregioni),'.']);
         
