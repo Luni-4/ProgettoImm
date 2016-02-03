@@ -8,15 +8,27 @@
     img1 = imresize(img1, resize);
     img2 = imresize(img2, resize);
     
+    subplot(5,5,1);
+    imshow(img1,[]);
+    subplot(5,5,2);
+    imshow(img2,[]);
+    
+    
     % Trasformazione in scala di grigio e a valori double per poter essere forniti in input
     % al calcolatore di flusso ottico
    img1 = double(rgb2gray(img1));
    img2 = double(rgb2gray(img2));
+   
+    subplot(5,5,3);
+    imshow(img1,[]);
+    subplot(5,5,4);
+    imshow(img2,[]);
     
     % Funzione che calcola flusso ottico tra 2 immagini e restituisce
     % derivata lungo le x,y e tempo più vettori di flusso ottico   
     
-    [u,v] = Optflow(img1,img2); 
+    [u,v] = Optflow(img1,img2);   
+
 
     
     iterazione=0; %Variabile che salva numero di iterazioni compiute su frame
@@ -36,7 +48,7 @@
         uStimato=u; %Vettore usato per salvare flusso ottico stimato lungo le x
         vStimato=v; %Vettore usato per salvare flusso stimato lungo le y
        
-        threshold=1; %impostare soglia per eliminazione di valori troppo alti
+        threshold=0.80; %impostare soglia per eliminazione di valori troppo alti
         for i=1:numregioni
             [xt,yt]=find(regioni == i);
             [Axi, Ayi, uS, vS] = affine(u(regioni==i),v(regioni==i),xt,yt);
@@ -99,8 +111,8 @@
         toc;
         
         % Mostro risultato iterazione
-        figure(1);
-        subplot(4,5,iterazione)
+        %figure(1);
+        subplot(5,5,iterazione+4);
         imshow(regioni,[]);
         title(['Iterazione ', num2str(iterazione),', cluster: ',num2str(numregioni),'.']);
         
