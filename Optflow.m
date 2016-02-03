@@ -4,7 +4,7 @@
     optical_flow = vision.OpticalFlow(...
     'Method', 'Lucas-Kanade', ...
     'OutputValue', 'Horizontal and vertical components in complex form', ... %valor in output in forma complessa
-    'NoiseReductionThreshold', 0.35, ... % Soglia per riduzione del rumore
+    'NoiseReductionThreshold', 2000, ... % Soglia per riduzione del rumore
     'ReferenceFrameSource', 'Input port'); %Usare come frame di riferimento un immagine in input
 
    

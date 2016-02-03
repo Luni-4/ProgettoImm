@@ -17,7 +17,11 @@ function [Axi, Ayi,uStimato, vStimato ] = affine(uReg,vReg,xt,yt)
     % Risoluzione del sistema Ax=b per i parametri affini dei flussi ottici lungo le x 
     Axi=sumr\sumvx;   
     % Risoluzione del sistema Ax=b per i parametri affini dei flussi ottici lungo le y
-    Ayi=sumr\sumvy;     
+    Ayi=sumr\sumvy;   
+    
+    %Se si vogliono usare le pseudo inverse
+    %Axi = pinv(sumr)*sumvx; %parametri affini flussi ottici lungo le x
+   % Ayi = pinv(sumr)*sumvy; %parametri affini flussi ottici lungo le y 
     
 
     uStimato = regressorT(:,1:3)*Axi; %Calcolo dei flussi ottici stimati lungo le x
