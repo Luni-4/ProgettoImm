@@ -11,7 +11,7 @@
    img2 = double(rgb2gray(img2));
     
     % Riduzione di 1/4 per fattori computazionali
-    resize = 1/4;   
+    resize = 1/2;   
     img1 = imresize(img1, resize);
     img2 = imresize(img2, resize);    
     
@@ -19,10 +19,12 @@
     % Funzione che calcola flusso ottico tra 2 immagini e restituisce
     % derivata lungo le x,y e tempo più vettori di flusso ottico   
     
-    [u,v] = Optflow(img1,img2);   
+    [u,v] = Optflow(img1,img2);    
     
-    figure(1);
-    quiver(u,v);
+    [ux, uy] = find(ones(size(u)));
+    
+    figure(1); 
+    quiver(ux,uy,u(:),v(:));
     title('Flusso Ottico');
     
     iterazione=0; %Variabile che salva numero di iterazioni compiute su frame
@@ -91,7 +93,8 @@
         %k = floor(mean(1:size(affini,1)));        
         
         pass = affini(1:k, 1:6);
-        [indx, cc] = kmeans(affini(:,1:6),[], 'EmptyAction','singleton',  'Start',pass, 'MaxIter',1000);
+        [indx, cc] = kmeans(affini(:,1:6),[], 'EmptyAction','singleton',  'Start',pass);
+        %[indx, cc] = kmeans(affini(:,1:6),k);
         
         %Assegnameno regioni a cluster più vicino
         [regioni,distanza] = assegnaCluster(u, v,cc,regioni);
@@ -99,7 +102,7 @@
 
         % Elimino pixel con errore troppo alto da regioni
         % th rappresenta errore massimo
-        th=0.5;
+        th=1;
         regioni = residualError(regioni,distanza,th);
         
         % Separo le regioni non connesse
