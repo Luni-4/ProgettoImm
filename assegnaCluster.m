@@ -14,8 +14,8 @@ function [newRegioni,distanzaMin]  = assegnaCluster(u,v,cc,regioni)
     
     % Calcolo u e v rispetto ogni centro possibile
     for i=1:size(cc,1)
-        uStimato(:,:,i) = reshape(regressore*(cc(i,1:3))',sz);
-        vStimato(:,:,i) = reshape(regressore*(cc(i,4:6))',sz);
+        uStimato(:,:,i) = reshape(regressore*(cc(i,1:3)'),sz);
+        vStimato(:,:,i) = reshape(regressore*(cc(i,4:6)'),sz);
     end
     
     % Ripeto valori di u e v trovati dal flusso ottico per numero centri

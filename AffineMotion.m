@@ -67,8 +67,16 @@
 %         [cc]= kmean_adattivo(affini,th);
         
         %Kmeans di matlab
-        k = size(affini,1)/2;
-        [indx, cc] =kmeans(affini(:,1:6),k);
+        
+        % O si sceglie k usando sempre la metà dei parametri affini
+        % disponibili
+        %k = ceil(size(affini,1)/2); 
+        
+        % O si sceglie k usando la media del numero di parametri affini
+        k = floor(mean(1:size(affini,1)));        
+        
+        pass = affini(1:k, 1:6);
+        [indx, cc] = kmeans(affini(:,1:6),[], 'EmptyAction','singleton',  'Start',pass, 'MaxIter',1000);
         
         %Assegnameno regioni a cluster più vicino
         [regioni,distanza] = assegnaCluster(u, v,cc,regioni);
@@ -92,7 +100,7 @@
         
         % Mostro risultato iterazione
         figure(1);
-%         subplot(4,5,iterazione)
+        subplot(4,5,iterazione)
         imshow(regioni,[]);
         title(['Iterazione ', num2str(iterazione),', cluster: ',num2str(numregioni),'.']);
         
