@@ -11,7 +11,7 @@ video = VideoReader(filename);
 
 % Definizione di flusso ottico usando Lucas-Kanadae e impostazione soglia
 % di noise
-opticFlow = opticalFlowLK('NoiseThreshold', 0.05);
+opticFlow = opticalFlowLK('NoiseThreshold', 0.0039);
 
 % Lettura primo frame viene posta fuori dal ciclo per evitare che
 % AffineMotion calcoli layer tra primo frame e frame precedente (immagine
@@ -46,10 +46,14 @@ while hasFrame(video)
     
     % Calcolo del flusso ottico tra frame corrente e frame precedente
     flow = estimateFlow(opticFlow, frameGrayCurrent);
-    
+    figure(1);
+    imshow(frameGrayCurrent,[]);
+    figure(2);
+    plot(flow);
+    %quiver(flow.Vx,flow.Vy);   
    
      % Modelli di movimento calcolati da funzione AffineMotion
-     AffineMotion(flow.Vx,flow.Vy, prima);     
+     %AffineMotion(flow.Vx,flow.Vy, prima);     
     
     % Finita prima iterazione, variabile logica prima viene posta a false    
     prima = false;

@@ -23,10 +23,6 @@ function AffineMotion(u,v, prima)
 
 %[ux, uy] = find(ones(size(u)));
 
-figure(1);
-quiver(u,v);
-title('Flusso Ottico');
-
 iterazione=0; %Variabile che salva numero di iterazioni compiute su frame
 
 %Suddivisione di flusso ottico in regioni
@@ -36,12 +32,12 @@ end
 
 figure(2);
 
-subplot(5,5,1);
-imshow(img1,[]);
-subplot(5,5,2);
-imshow(img2,[]);
+%subplot(5,5,1);
+%imshow(img1,[]);
+%subplot(5,5,2);
+%imshow(img2,[]);
 
-subplot(5,5,3);
+subplot(5,5,1);
 imshow(regioni,[]);
 
 while iterazione < 20 % Ciclare fino ad un numero euristico di iterazioni
@@ -124,7 +120,7 @@ while iterazione < 20 % Ciclare fino ad un numero euristico di iterazioni
     
     % Mostro risultato iterazione
     %figure(1);
-    subplot(5,5,iterazione+3);
+    subplot(5,5,iterazione+1);
     imshow(regioni,[]);
     title(['Iterazione ', num2str(iterazione),', cluster: ',num2str(numregioni),'.']);
     
