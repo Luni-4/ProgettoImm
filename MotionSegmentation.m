@@ -49,8 +49,7 @@ while hasFrame(video)
     
    
      % Modelli di movimento calcolati da funzione AffineMotion
-     %[layer , modelli] = AffineMotion(flow.Vx,flow.Vy, prima);
-     % layer = Warping(framePrevious, frameGrayCurrent, modelli, layer); 
+     AffineMotion(flow.Vx,flow.Vy, prima);     
     
     % Finita prima iterazione, variabile logica prima viene posta a false    
     prima = false;

@@ -15,7 +15,7 @@ prima = true;
 while(true)
     
     % Calcolo distanza rispetto ogni possibile centro
-    dist = sqrt(sum((affini(:,:) - repmat(centri,[size(affini,1),1,1])).^2,2));
+    dist = sqrt(sum((repmat(affini,[1,1,size(centri,3)]) - repmat(centri,[size(affini,1),1,1])).^2,2));
     
     % Associazione di ogni regione al centro più vicino
     [distanzaMin,newRegioni] = min(dist,[],3);

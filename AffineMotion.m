@@ -1,30 +1,30 @@
-%function AffineMotion(u,v, prima)
+function AffineMotion(u,v, prima)
 
 % Caricamento dei frame
-img1 = imread('images/cars1_01.jpg');
-img2 = imread('images/cars1_02.jpg');
+%img1 = imread('images/0030.png');
+%img2 = imread('images/0031.png');
 
 
 % Trasformazione in scala di grigio e a valori double per poter essere forniti in input
 % al calcolatore di flusso ottico
-img1 = double(rgb2gray(img1));
-img2 = double(rgb2gray(img2));
+%img1 = double(rgb2gray(img1));
+%img2 = double(rgb2gray(img2));
 
 % Riduzione di 1/4 per fattori computazionali
-resize = 1/2;
-img1 = imresize(img1, resize);
-img2 = imresize(img2, resize);
+%resize = 1/2;
+%img1 = imresize(img1, resize);
+%img2 = imresize(img2, resize);
 
 
 % Funzione che calcola flusso ottico tra 2 immagini e restituisce
 % derivata lungo le x,y e tempo più vettori di flusso ottico
 
-[u,v] = Optflow(img1,img2);
+%[u,v] = Optflow(img1,img2);
 
-[ux, uy] = find(ones(size(u)));
+%[ux, uy] = find(ones(size(u)));
 
 figure(1);
-quiver(ux,uy,u(:),v(:));
+quiver(u,v);
 title('Flusso Ottico');
 
 iterazione=0; %Variabile che salva numero di iterazioni compiute su frame
@@ -86,19 +86,20 @@ while iterazione < 20 % Ciclare fino ad un numero euristico di iterazioni
     %         %Kmeans di matlab
     %
     %         % O si sceglie k usando sempre la metà dei parametri affini
-    %         % disponibili
-    %         k = ceil(size(affini,1)/2);
+    %         % disponibili            
+              k = ceil(size(affini,1)/2);
+            
     %
     %         % O si sceglie k usando la media del numero di parametri affini
     %         %k = floor(mean(1:size(affini,1)));
     %
-    %         pass = affini(1:k, 1:6);
-    %         [indx, cc] = kmeans(affini(:,1:6),[], 'EmptyAction','singleton',  'Start',pass);
-    %         %[indx, cc] = kmeans(affini(:,1:6),k);
+            pass = affini(1:k, 1:6);
+            [indx, cc] = kmeans(affini(:,1:6),[], 'EmptyAction','singleton',  'Start',pass);
+    %        %[indx, cc] = kmeans(affini(:,1:6),k);
     %
     %Threshold-Based Clustering Algorithm
-    th = 1;
-    [cc] = thresholdClustering(affini,th);
+    %th = 0.2;
+    %[cc] = thresholdClustering(affini,th);
     
     
     %Assegnameno regioni a cluster più vicino
@@ -130,4 +131,4 @@ while iterazione < 20 % Ciclare fino ad un numero euristico di iterazioni
     
 end % Fine iterazioni singolo frame
 
-%end
+end
