@@ -1,28 +1,5 @@
 function AffineMotion(u,v, prima)
 
-% Caricamento dei frame
-%img1 = imread('images/0030.png');
-%img2 = imread('images/0031.png');
-
-
-% Trasformazione in scala di grigio e a valori double per poter essere forniti in input
-% al calcolatore di flusso ottico
-%img1 = double(rgb2gray(img1));
-%img2 = double(rgb2gray(img2));
-
-% Riduzione di 1/4 per fattori computazionali
-%resize = 1/2;
-%img1 = imresize(img1, resize);
-%img2 = imresize(img2, resize);
-
-
-% Funzione che calcola flusso ottico tra 2 immagini e restituisce
-% derivata lungo le x,y e tempo più vettori di flusso ottico
-
-%[u,v] = Optflow(img1,img2);
-
-%[ux, uy] = find(ones(size(u)));
-
 iterazione=0; %Variabile che salva numero di iterazioni compiute su frame
 
 %Suddivisione di flusso ottico in regioni
@@ -30,7 +7,7 @@ if iterazione == 0 %&& prima == true
     [regioni, numregioni] = Image20x20Subdivider(u);
 end
 
-figure(2);
+figure(3);
 
 %subplot(5,5,1);
 %imshow(img1,[]);
