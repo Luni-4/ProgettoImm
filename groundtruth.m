@@ -57,7 +57,7 @@
             prova = img1 == valer(i);          
             giro = and(prova, currentLayergt);          
            if sum(sum(giro)) ~= 0              
-               livelli(:,:,lt) = (livelli(:,:,lt) + prova;
+               livelli(:,:,lt) = (livelli(:,:,lt) + prova);
            end           
        end    
           
