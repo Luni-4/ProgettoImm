@@ -1,7 +1,7 @@
-%function [matrice, accuracy] = groundtruth()  
+%function [matrice, sensitivity, specificity, precision, accuracy] = GroundTruth()  
 
 % Per ogni layer presente nel GT, funzione restituisce matrice di
-% confusione, valore di sensitivity, specificità, precisione e accuratezza
+% confusione, valore di sensitività, specificità, precisione e accuratezza
 
 % Tipi di file apribili
     type = {'*.jpg;*.JPG;*.jpeg;*.png;*.PNG',...
@@ -127,5 +127,3 @@
   
    
 %end
-   
-   
