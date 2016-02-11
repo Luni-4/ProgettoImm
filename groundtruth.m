@@ -1,124 +1,121 @@
-%function [matrice, sensitivity, specificity, precision, accuracy] = GroundTruth()  
+%function [matrice, sensitivity, specificity, precision, accuracy, numclust] = GroundTruth()  
 
-% Per ogni layer presente nel GT, funzione restituisce matrice di
-% confusione, valore di sensitività, specificità, precisione e accuratezza
+% Funzione che restituisce, per ogni layer presente nel GT (Ground Truth), matrice di
+% confusione, valore di sensitività, di specificità, di precisione, di
+% accuratezza e il numero di cluster che si sovrappongono a quel GT
 
-% Tipi di file apribili
+    % Selezionare tipi di file che funzione uigetfile può aprire
     type = {'*.jpg;*.JPG;*.jpeg;*.png;*.PNG',...
                 'All image files (*.jpg;*.jpeg;*.png)'
                 '*.jpg;*.JPG;*.jpeg', 'JPEG files (*.jpg;*.jpeg)';      
                 '*.png;*.PNG', 'PNG files (*.png)'};
 
-    % Scelta di layer da confrontare
+    % Scelta del layer di movimento da confrontare (img1 contiene filename immagine caricata,
+    % filenameimg1 il suo path)
     [img1, filenameimg1] =  uigetfile(type, 'Selezionare layer da confrontare');
 
-    % Scelta di ground truth
-
+    % Scelta di ground truth (img2 contiene filename immagine caricata,
+    % filenameimg2 il suo path)
     [img2, filenameimg2] = uigetfile('*.pgm;*.PGM;*.ppm;*.PPM', 'Selezionare ground truth');
 
-    % Devono essere caricate entrambe le immagini
+    % Utilizzatore deve caricare immagine da confrontare e GT, altrimenti
+    % funzione restituisce errore
     if numel(filenameimg1) == 1 || numel(filenameimg2) == 1
         error('Bisogna caricare entrambe le immagini');
     end   
  
 
-    % Caricamento immagini
+    % Lettura di immagini inserite tramite le funzione uigetfile
     img1 = imread([filenameimg1 img1]);
     img2 = imread([filenameimg2 img2]);
 
-    % Convertire a livelli di grigio e binarizzare immagine principale
+    % Convertire immagini caricate in scala di grigio per mezzo di matgrey
     img1 = 255 * mat2gray(img1);
     img2 = 255 * mat2gray(img2);   
 
-    % Trovare quanti layers sono contenuti nel ground truth
+    % Numero di layers presenti nel GT caricato
     val = unique(img2);
     
-    % Non contare lo sfondo, di colore bianco o nero, nel calcolo dei
-    % layers
+    % Eliminare lo sfondo, sia che sia di colore bianco o nero, nel calcolo
+    % del numero di layers del GT (mode trova il valore più alto
+    % all'interno dell'immagine, essendo, in scala di grigio a 8 bit, 255 è
+    % il valore più alto)
     if mode(img2) == 255
         val(end) = [];
     else
         val(1) = [];
     end    
 
-    % Trovare da quanti layers è composta immagine da confrontare
-    valer = unique(img1);
-    
-   %for i=1:numel(valer)           
-            %subplot(6,6,i);
-           %imshow(img1 == valer(i),[]); 
-          
-   %end    
+    % Numero di layers presenti nel layer di movimento caricato
+    valer = unique(img1);  
      
-     % Numero di layers del ground truth
+     % Salvare nella variabile n i layers del GT rimasti dopo eliminazione
+     % dello sfondo
      n = size(val,1);
 
-    % Definire matrice che contiene layer che hanno in comune pixels con
-    % i layer dei ground truth
+    % Definire matrice tridimensionale contenente le regioni del layer di movimento che
+    % hanno almeno un pixel in comune con un determinato layer del GT
     livelli = zeros(size(img2,1),size(img2,2),n);
     
+    % Array che salva il numero di cluster in comune con ciascun layer del GT
+    numclust = zeros(1,n);
+    
   
-   % Ogni iterazione corrisponde a un layer del ground truth, si trovano i layer dell immagine che hanno in comune
-   % almeno un pixel con il layer del ground truth considerato. Il
-   % risultato finale, salvato nella matrice tridimensionale livelli, conterrà il
-   % i layer che non hanno nulla a che fare con il layer del
-   % ground truth considerato (saranno scartati successivamente)
-   for lt=1:n       
-        currentLayergt = img2 == val(lt);      
+   % Ogni iterazione del ciclo for più esterno cicla su un
+   % layer del GT, mentre ogni iterazione del ciclo più interno cicla su
+   % ogni regione del layer di movimento. Se una regione ha almeno un pixel in comune con il layer del GT, 
+   % la suddetta regione viene aggiunta alla matrice livelli. Quando il ciclo più interno terminerà, la matrice conterrà
+   % le regioni che non appartengono al layer del GT, ovvero le uniche che
+   % non verranno mai sommate
+   for lt=1:n   % Ciclo for più esterno (cicla sui layer GT)
+       
+        currentLayergt = img2 == val(lt);   % Viene salavato il layer corrente del GT    
 
-        for i=1:numel(valer)
-            prova = img1 == valer(i);          
-            giro = and(prova, currentLayergt);          
-           if sum(sum(giro)) ~= 0              
-               livelli(:,:,lt) = (livelli(:,:,lt) + prova);
+        for i=1:numel(valer) % Ciclo for più interno (cicla sulle regioni)
+            currentLayer = img1 == valer(i); % Viene salvata la regione corrente che si sta analizzando          
+            soluzione = and(currentLayer, currentLayergt);  % Eseguito end per vedere se si ha almeno un pixel in comune        
+           if sum(sum(soluzione)) ~= 0  % Se si ha un pixel in comune            
+               livelli(:,:,lt) = (livelli(:,:,lt) + currentLayer); % Sommare a matrice livelli il layer in comune
+               numclust(1,lt) = numclust(1,lt) + 1; % Salvataggio del numero di cluster in comune con il livello del GT considerato
            end           
        end    
           
-   end
-   
-  
-   
-   %figure(1); 
-  % imshow(livelli(:,:,1),[]);
-   %img3 = im2bw(img1);
-   % figure(1); 
- % imshow(img3,[]);
- % figure(2);
- % ris = ~(img3 - livelli(:,:,1));
- % imshow(ris,[]);
-   
+   end   
  
-   % Matrice che salva TP, TN, FP, FN per ogni livello GT
+   % Matrice tridimensionale che salva TP, TN, FP, FN per ogni livello GT
    matrice = zeros(2,2,n);   
    
-   % Vettore contenente sensitivity per ogni livello GT
+   % Array contenente sensitivity per ogni livello GT
    sensitivity = zeros(1,n);
    
-   % Vettore contenente specificità per ogni livello GT
+   % Array contenente specificità per ogni livello GT
    specificity = zeros(1,n);   
    
-   % Vettore contenente precisione per ogni livello GT
+   % Array contenente precisione per ogni livello GT
    precision = zeros(1,n);
    
-   % Vettore contenente accuratezza per ogni livello GT
+   % Array contenente accuratezza per ogni livello GT
    accuracy = zeros(1,n);
    
-   % Immagine principale viene binarizzata per permettere confronto
+   % Layer di movimento viene binarizzata per poter trovare le regioni
+   % associate ad ogni layer del GT
    img3 = im2bw(img1);
    
    for i=1:n
-       % Facendo differenza tra immagine originale e
-       % elementi non appartenenti a layer ground truth considerato, si trova risultato finale 
-       % Il risultato finale viene infine negato
+       % Facendo differenza tra layer di movimento e
+       % elementi non appartenenti al layer del GT considerato, salvati nella matrice livelli, si trova il risultato finale 
+       % Il risultato finale viene infine negato per riportare i valori in
+       % comune al valore binario di 1
        livelli(:,:,i) =  ~(img3 - livelli(:,:,i));
        
        % Calcolo di matrice di confusione per ogni livello
-       matrice(1,1,i) = sum(sum(livelli(:,:,i) & img2 == val(i)));
-       matrice(1,2,i) = sum(sum(livelli(:,:,i) & ~(img2 == val(i))));
-       matrice(2,1,i) = sum(sum((~livelli(:,:,i)) & (img2 == val(i))));
-       matrice(2,2,i) = sum(sum((~livelli(:,:,i)) & ~(img2 == val(i)))); 
+       matrice(1,1,i) = sum(sum(livelli(:,:,i) & img2 == val(i))); % Veri positivi sono elementi che sono posti a valore logico true sia nel layer di movimento sia in quello di GT
+       matrice(1,2,i) = sum(sum(livelli(:,:,i) & ~(img2 == val(i)))); % Veri negativi sono gli elementi che sono posti a valore logico true in layer di movimento ma falsi in quello di GT
+       matrice(2,1,i) = sum(sum((~livelli(:,:,i)) & ~(img2 == val(i)))); % Falsi positivi sono gli elementi che sono posti a valore logico false sia nel layer di movimento sia in quello di GT 
+       matrice(2,2,i) = sum(sum((~livelli(:,:,i)) & (img2 == val(i)))); % Falsi negativi sono gli elementi che sono posti a valore logico false in layer di movimento ma veri in quello di GT
        
-       % Calcolare valori
+       % Calcolare valori di sensitività, specificità, precisione,
+       % e accuratezza
        sensitivity(1,i) = matrice(1,1,i)/(matrice(1,1,i)+matrice(2,2,i));
        specificity(1,i) = matrice(1,2,i)/(matrice(1,2,i)+matrice(2,1,i));
        precision(1,i) = matrice(1,1,i)/(matrice(1,1,i)+matrice(2,1,i));
