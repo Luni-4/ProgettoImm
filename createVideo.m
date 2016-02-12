@@ -1,9 +1,6 @@
 function createVideo(filename)
-
-%
-    if nargin<1
-        filename = input('Inserisci nome video: ','s');
-    end
+ % Funzione che crea un video partendo dalla sequenza di immagini di
+ % partenza
 
 
     % Funzione per la scelta della serie di immagini
@@ -22,7 +19,7 @@ function createVideo(filename)
     % Lettura prima immagine della sequenza
     img = imread(imgnames{1});
 
-    % Estrazione delle dimensioni
+    % Estrazione delle dimensioni delle immagini
     dimX= size(img,1);
     dimY = size(img,2);
 

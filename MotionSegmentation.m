@@ -1,7 +1,8 @@
-% Nome del file video che si vuole creare/aprire
+% Nome e formato del video che si vuole creare/aprire
 filename = 'prova.avi';
 
-% Se non esiste il video formato dalla sequenza di immagini, crearlo
+% Se il video composto dalla sequenza di immagini di partenza non esiste,
+% crearlo
 if ~exist(filename,'file')
     createVideo(filename);
 end
@@ -9,11 +10,11 @@ end
 % Apertura video in lettura
 video = VideoReader(filename);
 
-% Definizione di flusso ottico usando Lucas-Kanadae e impostazione soglia
+% Definizione del flusso ottico usando Lucas-Kanadae e impostazione soglia
 % di noise
 opticFlow = opticalFlowLK('NoiseThreshold', 0.0080);
 
-% Lettura primo frame viene posta fuori dal ciclo per evitare che
+% La lettura del primo frame viene posta fuori dal ciclo per evitare che
 % AffineMotion calcoli layer tra primo frame e frame precedente (immagine
 % nera) aggiunta da implementazione del Lucas-Kanadae
    
@@ -35,7 +36,7 @@ framePrevious = frameGrayCurrent;
 %iniziali 
 prima = true;
 
-% Ciclare finché non ci sono più frame disponibili
+% Ciclare fino all'ultimo frame della sequenza video 
 while hasFrame(video)
     
     % Lettura del frame corrente del video
@@ -49,16 +50,15 @@ while hasFrame(video)
     figure(1);
     imshow(frameGrayCurrent,[]);
     figure(2);
+    
+    % Visualizzazione del flusso ottico
     flows = opticalFlow(flipud(flow.Vx),flipud(flow.Vy)); 
     plot(flows, 'DecimationFactor',[1 1],'ScaleFactor', 1);     
    
-     % Modelli di movimento calcolati da funzione AffineMotion
+     % Calcolo dei layer di movimento per ciascuna coppia di frame della sequenza invocando AffineMotion
      AffineMotion(flow.Vx,flow.Vy, prima);     
     
-    % Finita prima iterazione, variabile logica prima viene posta a false    
-    prima = false;
-    
-    % Salvataggio frame corrente da usare in iterazione successiva per
-    % funzione di warping
-    framePrevious = frameGrayCurrent;    
+    % Dopo il calcolo dei layer di movimento associati alla prima coppia di frame della sequenza, variabile logica prima viene posta a false    
+    prima = false;    
+     
 end

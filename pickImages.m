@@ -1,6 +1,6 @@
 function imagename = pickImages()
 
-    % Titolo
+    % Titolo di interfccia grafica
     title = 'Scegli la serie di immagini da usare per creare video';
 
     % Tipi di file che funzione può aprire
@@ -10,12 +10,12 @@ function imagename = pickImages()
             '*.png;*.PNG', 'PNG files (*.png)'};
 
 
-    % Scegliere serie di immagini per comporre video
+    % Scegliere la serie di immagini che comporranno il video
     [imagename, path] = uigetfile(type, title, 'MultiSelect', 'on');
     
     % Controllare se sono state selezionate immagini
     if iscell(imagename)
-        %Crea vettore di celle contenente per ogni immagine percorso e nomefile
+        % Crea array di celle che contiene, per ogni immagine, percorso e nomefile
         for i=1:size(imagename,2)
             imagename{i} = [path imagename{i}];
         end
