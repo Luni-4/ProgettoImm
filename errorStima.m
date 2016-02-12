@@ -1,8 +1,12 @@
 function bool = errorStima(u,v,uS,vS,th) 
-    sigma = (sum((u-uS).^2+(v-vS).^2))/numel(u); % formula per il calcolo dell'errore
-    if sigma <= th %se errore è <= a soglia, regione mantenuta nell'analisi
+    % Viene calcolato l'errore residuo associato alla regione/layer di
+    % movimento considerato    
+    sigma = (sum((u-uS).^2+(v-vS).^2))/numel(u);
+    % se errore, contenuto nella variabile sigma, è minore o uguale a soglia di threshold,
+    % regione/ layer di movimento non viene scartato dall'analisi
+    if sigma <= th 
        bool=1;
-    else %altrimenti eliminata
+    else 
        bool=0;
     end
 end

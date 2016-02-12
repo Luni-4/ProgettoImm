@@ -1,8 +1,18 @@
 function AffineMotion(u,v, prima)
 
-iterazione=0; %Variabile che salva numero di iterazioni compiute su frame
+% Funzione che identifica i diversi layer di movimento per ciascuna coppia
+% di frame presenti nella sequenza video. Nei commenti relativi a questa
+% funzione, la parola regioni si riferisce alle regioni 20x20 calcolate
+% inizialmente, mentre layer di movimento alle successive regioni calcolate
 
-%Suddivisione di flusso ottico in regioni
+% Variabile che conta il numero di iterazioni fatte dal ciclo while per
+% individuare tutti i possibili layer di movimento
+iterazione=0; 
+
+% Il flusso ottico associato ai primi 2 frame della sequenza video e, solo
+% alla prima iterazione del ciclo while, viene suddiviso in regioni
+% non sovrapposte di dimensioni 20x20 (per le altre coppie di frame della sequenza la variabile prima viene
+% posta a 0)
 if iterazione == 0 %&& prima == true
     [regioni, numregioni] = Image20x20Subdivider(u);
 end
@@ -17,21 +27,42 @@ figure(3);
 subplot(5,5,1);
 imshow(regioni,[]);
 
-while iterazione < 20 % Ciclare fino ad un numero euristico di iterazioni
+while iterazione < 20 % Ciclo while viene eseguito fino ad un numero di iterazioni tale da consentire di poter 
+    % individuare tutti i layer di movimento presenti 
     
-    % Durata esecuzione ciclo
+    % Inizializzazione del contatore che valuta il tempo di esecuzione
+    % delle istruzioni contenute nel ciclo while per ogni iterazione
     tic;
     
-    affini = zeros(numregioni,7); %Matrice usata per salvare parametri affini e regione ad essi associata
-    uStimato=u; %Vettore usato per salvare flusso ottico stimato lungo le x
-    vStimato=v; %Vettore usato per salvare flusso stimato lungo le y
+    % Matrice che salva i parametri affini e la regione alla quale sono associati 
+    affini = zeros(numregioni,7);
+    % Array che salva il flusso ottico calcolato usando i parametri affini
+    % delle x (ax0, axx, axy)   
+    uStimato=u; 
+    % Array che salva il flusso ottico calcolato usando i parametri affini
+    % delle y (ay0, ayx, ayy)
+    vStimato=v; 
     
-    threshold=1; %impostare soglia per eliminazione di valori troppo alti
+    % Viene impostata soglia per l'eliminazione delle regioni che hanno un
+    % errore residuo troppo alto, le ipotesi associate a queste regioni non forniscono una
+    % buona descrizione del movimento e devono essere eliminate
+    % per facilitare l'operazione di clustering    
+    threshold=1; 
+    
+    % Il ciclo itera sui layer di movimento e le regioni calcolando le ipotesi di movimento 
+    % con i relativi parametri affini
     for i=1:numregioni
-        [xt,yt]=find(regioni == i);
+        % Vengono salvati gli indici delle righe nell'array xt e quelli delle colonne in yt
+        [xt,yt] = find(regioni == i);
+        % Viene invocata funzione affine
         [Axi, Ayi, uS, vS] = affine(u(regioni==i),v(regioni==i),xt,yt);
+        % Viene salvato il flusso ottico calcolato usando i parametri affini lungo le x 
         uStimato(regioni == i)= uS;
+        % Viene salvato il flusso ottico calcolato usando i parametri affini lungo le y
         vStimato(regioni == i)= vS;
+        % Funzione che calcola errore residuo, se valore restituito è pari
+        % a 1, i parametri affini calcolati vengono salvati con realtiva
+        % regione/ layer di movimento alla quale sono associati      
         if errorStima(u(regioni==i),v(regioni==i),uS,vS,threshold) == 1
             affini(i, 1:3) = Axi';  % Salvataggio dei parametri affini delle x
             affini(i, 4:6) = Ayi'; % Salvataggio dei parametri affini della y
@@ -40,7 +71,8 @@ while iterazione < 20 % Ciclare fino ad un numero euristico di iterazioni
     end
     
     
-    %Eliminazione di valori affini che non hanno superato la soglia
+    %Eliminazione dall'array affini i parametri affini che non hanno
+    %superato la soglia di threshold
     affini((affini(:,7) ==0),:) = [];
     
     
