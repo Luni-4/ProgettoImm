@@ -101,7 +101,7 @@ while hasFrame(video)
      % per le x e le y, la variabile prima e i layer di movimento di
      % regioniIn trovati all'iterazione precedente. Usando la variabile regioniIn si garantisce una maggiore affidabilità nel calcolo
      % dei layer di movimento e un riduzione del costo computazionale. 
-    [regioniOut, regioniIn] = AffineMotion(flow.Vx, flow.Vy, prima, regioniIn);   
+     [regioniOut, regioniIn] = AffineMotion(flow.Vx, flow.Vy, prima, regioniIn);   
 
     
     % Se non esiste la directory per il
@@ -129,5 +129,5 @@ while hasFrame(video)
     beep;
 end
 
- % Segnale sonoro che identifica la fine dell'esecuzione del processo
+% Segnale sonoro che identifica la fine dell'esecuzione del processo
 beep;

@@ -21,15 +21,6 @@ else
     numregioni = numel(unique(regioniIn));
 end
 
-% figure(3);
-
-%subplot(5,5,1);
-%imshow(img1,[]);
-%subplot(5,5,2);
-%imshow(img2,[]);
-
-% subplot(5,5,1);
-% imshow(regioni,[]);
 
 % Il ciclo while sottostante viene eseguito per un numero di iterazioni tale da consentire di poter 
 % individuare tutti i layer di movimento presenti 
