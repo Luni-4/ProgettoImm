@@ -64,10 +64,16 @@ while hasFrame(video)
     % Lettura del frame corrente del video
     frameRGBCurrent = readFrame(video);
     
-    % Conversione frame corrente in scala di grigio
+    % Conversione frame corrente in scala di grigio per permettere il
+    % calcolo del flusso ottico
     frameGrayCurrent = rgb2gray(frameRGBCurrent);
     
-    % Calcolo del flusso ottico tra frame corrente e frame precedente
+    % Calcolo del flusso ottico tra frame corrente e frame precedente. flow
+    % è un oggetto che contiene 4 matrici diverse:
+    % la prima è formata dal magnitudo del flusso ottico
+    % la seconda la fase
+    % la terza e la quarta, il flusso ottico per le x e il flusso ottico
+    % per le y 
     flow = estimateFlow(opticFlow, frameGrayCurrent);
     
     % Possibilità di stampare il flusso ottico per ogni iterazione
@@ -78,18 +84,23 @@ while hasFrame(video)
     %         flows = opticalFlow(flipud(flow.Vx),flipud(flow.Vy));
     %         plot(flows, 'DecimationFactor',[1 1],'ScaleFactor', 1);
     
-    % Se si è alla prima iterazione, regioniIn è un array vuoto
+   % Se si è alla prima iterazione, regioniIn è un array vuoto, perché
+   % funzione AffineMotion non è stata ancora mai invocata.
     if prima == true;
         regioniIn = [];
         
-    end
+    end   
+   
     
-     % Calcolo dei layer di movimento per ciascuna coppia di frame della sequenza invocando AffineMotion
+     % Calcolo dei layer di movimento per ciascuna coppia di frame della sequenza invocando AffineMotion     
+     % La funzione restituisce i layer di movimento calcolati
+     % per la coppia di frame considerata, contenuti in regioniOut, e i
+     % layer di movimento, a cui sono stati tolti i pixel con un errore
+     % troppo elevato, contenuti in regioniIn.
      % Vengono passati in input i flussi ottici calcolati precedentemente,
-     % per le x e le y, la variabile prima e la matrice contenente i layer
-     % di movimento trovati all'iterazione precedente. 
-     % Il primo valore restituito contiene i layer di movimento calcolati
-     % per la coppia di frame considerata, il secondo valore le regioni
+     % per le x e le y, la variabile prima e i layer di movimento di
+     % regioniIn trovati all'iterazione precedente. Usando la variabile regioniIn si garantisce una maggiore affidabilità nel calcolo
+     % dei layer di movimento e un riduzione del costo computazionale. 
     [regioniOut, regioniIn] = AffineMotion(flow.Vx, flow.Vy, prima, regioniIn);   
 
     
@@ -109,7 +120,7 @@ while hasFrame(video)
     imwrite(regioniNorm, ['output/cats01/Frame ', num2str(frame), '-',num2str(frame+1),' (Cluster=', num2str(numel(unique(regioniOut))),  ').png'],'png');
    
     % Incrementare il contatore dei frame
-    frame = frame +1;
+    frame = frame + 1;
     
     % Variabile prima viene posta a false    
     prima = false;
@@ -117,5 +128,6 @@ while hasFrame(video)
     % Segnale sonoro che identifica la fine dell'iterazione
     beep;
 end
+
  % Segnale sonoro che identifica la fine dell'esecuzione del processo
 beep;

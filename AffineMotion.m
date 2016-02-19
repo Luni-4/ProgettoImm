@@ -1,15 +1,23 @@
 function [regioniOut,regioniErr] =  AffineMotion(u,v, prima, regioniIn)
 
-%Variabile che salva numero di iterazioni compiute su frame
+% Funzione che identifica i diversi layer di movimento per ciascuna coppia
+% di frame presenti nella sequenza video. Nei commenti relativi a questa
+% funzione, la parola regioni si riferisce alle regioni 20x20 calcolate
+% inizialmente, mentre layer di movimento alle successive regioni calcolate
+
+% Variabile che conta il numero di iterazioni fatte dal ciclo while per
+% individuare tutti i possibili layer di movimento
 iterazione=1;
 
-% Suddivisione di flusso ottico in regioni
-% Se siamo alla prima iterazione tra i primi due frame, l'immagine viene
-% suddivisa in blocchi 20x20.
+% Se si è alla prima iterazione e si stanno analizzando i primi due frame
+% della sequenza, il flusso ottico viene suddiviso in regioni di dimensione
+% 20x20. Altrimenti, vengono utilizzati i layer di movimento, alla quale sono stati totli i pixel con errore
+% elevato, della coppia di frame analizzati precedentemente
 if prima == true
     [regioni, numregioni] = Image20x20Subdivider(u);
 else
     regioni = regioniIn;
+    % Trovare numero di layer di movimento contenuti in regioniIn
     numregioni = numel(unique(regioniIn));
 end
 
@@ -23,31 +31,56 @@ end
 % subplot(5,5,1);
 % imshow(regioni,[]);
 
-% Ciclare fino ad un numero euristico di iterazioni
+% Il ciclo while sottostante viene eseguito per un numero di iterazioni tale da consentire di poter 
+% individuare tutti i layer di movimento presenti 
 while (true)
     
-    % Durata esecuzione ciclo
+    % Inizializzazione del contatore che valuta il tempo di esecuzione
+    % delle istruzioni contenute nel ciclo while per ogni iterazione
     tic;
     
-    affini = zeros(numregioni,7); %Matrice usata per salvare parametri affini e regione ad essi associata
-    uStimato=u; %Vettore usato per salvare flusso ottico stimato lungo le x
-    vStimato=v; %Vettore usato per salvare flusso stimato lungo le y
+    % Matrice che salva i parametri affini e la regione alla quale sono associati 
+    affini = zeros(numregioni,7); 
     
-    threshold=1; %impostare soglia per eliminazione di valori troppo alti
+    % Array che salva il flusso ottico calcolato usando i parametri affini
+    % per le x (ax0, axx, axy)   
+    uStimato=u; 
+    
+    % Array che salva il flusso ottico calcolato usando i parametri affini
+    % per le y (ay0, ayx, ayy)
+    vStimato=v; 
+    
+    % Viene impostata soglia per l'eliminazione delle regioni/layer di movimento che hanno un
+    % errore residuo troppo alto, le ipotesi associate a queste regioni non forniscono una
+    % buona descrizione del movimento e devono essere eliminate
+    % per facilitare l'operazione di clustering    
+    threshold=1; 
+    
+    % Il ciclo itera sui layer di movimento/regioni calcolando le ipotesi di movimento 
+    % con i relativi parametri affini
     for i=1:numregioni
+        % Per ogni regione/layer di movimento vengono salvati gli indici delle righe nell'array xt e quelli delle colonne in yt
         [xt,yt]=find(regioni == i);
+        % Viene invocata funzione affine
         [Axi, Ayi, uS, vS] = affine(u(regioni==i),v(regioni==i),xt,yt);
+        % Viene salvato il flusso ottico calcolato usando i parametri affini per le x 
         uStimato(regioni == i)= uS;
+        % Viene salvato il flusso ottico calcolato usando i parametri affini per le y
         vStimato(regioni == i)= vS;
+        
+        % Funzione che calcola errore residuo, se valore restituito è pari
+        % a 1, i parametri affini calcolati vengono salvati con relativa
+        % regione/ layer di movimento alla quale sono associati      
         if errorStima(u(regioni==i),v(regioni==i),uS,vS,threshold) == 1
-            affini(i, 1:3) = Axi';  % Salvataggio dei parametri affini delle x
-            affini(i, 4:6) = Ayi'; % Salvataggio dei parametri affini della y
-            affini(i,7) = i; % Salvataggio della regione a cui sono associati
+            affini(i, 1:3) = Axi';  % Salvataggio dei parametri affini per le x
+            affini(i, 4:6) = Ayi'; % Salvataggio dei parametri affini per le y
+            affini(i,7) = i; % Salvataggio della regione/layer di movimento a cui sono associati
         end
     end
     
     
-    %Eliminazione di valori affini che non hanno superato la soglia
+    %Eliminazione dall'array affini i parametri affini che non hanno
+    %superato la soglia di threshold
     affini((affini(:,7) ==0),:) = [];
     
     
