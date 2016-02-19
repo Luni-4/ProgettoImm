@@ -4,7 +4,8 @@ function [cc] = thresholdClustering(affini,th)
 affini = affini(:,1:6);
 
 % Scelta casuale del seed per definire primo centro
-index = randsample(size(affini,1),1);
+% index = randsample(size(affini,1),1);
+index = ceil(size(affini,1)/2);
 seed = affini(index,:);
 centri = seed;
 
@@ -53,8 +54,8 @@ while(true)
             elementiCentri{newRegioni(i,1)}(end+1,:) = affini(i,:);
             
             
-        % Le regioni con valori NON compresi in soglia sono i centri di
-        % nuovi cluster
+            % Le regioni con valori NON compresi in soglia sono i centri di
+            % nuovi cluster
         else
             centri(1,:,end+1) = affini(i,:);
             elementiCentri{end+1,1} = affini(i,:);

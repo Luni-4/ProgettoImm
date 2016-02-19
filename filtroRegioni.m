@@ -3,36 +3,35 @@ function [nuoveRegioni, numregioni] = filtroRegioni(vecchieRegioni)
 
 nuoveRegioni = vecchieRegioni;
 
- % Trovare regioni
- reg = unique(vecchieRegioni);
-    
-  % Eliminare regione contenente pixel scartati da analisi
-  reg=reg(2:size(reg,1));
+% Trovare regioni
+reg = unique(vecchieRegioni);
+
+% Eliminare regione contenente pixel scartati da analisi
+reg=reg(2:size(reg,1));
 
 
-    for i=1:numel(reg)
-        conto = vecchieRegioni(vecchieRegioni == reg(i));
-        conto = numel(conto);
-        if (conto <= 250)
-            
-            nuoveRegioni(vecchieRegioni==reg(i)) = 0;
+for i=1:numel(reg)
+    conto = vecchieRegioni(vecchieRegioni == reg(i));
+    conto = numel(conto);
+    if (conto <= 250)
         
-        end
+        nuoveRegioni(vecchieRegioni==reg(i)) = 0;
         
     end
     
-    % Riordino la numerazione delle regioni prima kmeans
-    prova = nuoveRegioni;
-    vecchiValori = unique(nuoveRegioni);
-    vecchiValori = vecchiValori(2:size(vecchiValori,1));
-    
-    
+end
 
-    for i=1:numel(vecchiValori)
+% Riordino la numerazione delle regioni prima kmeans
+vecchiValori = unique(nuoveRegioni);
+vecchiValori = vecchiValori(2:size(vecchiValori,1));
 
-        nuoveRegioni(nuoveRegioni == vecchiValori(i)) = i;
-    end
+
+
+for i=1:numel(vecchiValori)
     
-    numregioni = numel(vecchiValori);
-    
+    nuoveRegioni(nuoveRegioni == vecchiValori(i)) = i;
+end
+
+numregioni = numel(vecchiValori);
+
 end

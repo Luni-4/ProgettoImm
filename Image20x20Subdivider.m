@@ -7,9 +7,9 @@ function [regioni, numregioni] = Image20x20Subdivider(img)
 %Controllo in quanti blocchi posso dividere; se non multiplo di 20,
 %l'ultimo riga e/o colonna avrà dimensioni differenti da 20x20
 numXblocks = sizeX/20;
-numYblocks = sizeY/20; 
+numYblocks = sizeY/20;
 
-%Creo le due matrici per definire il numero di blocchi da 20x20 necessari per le righe e le colonne, 
+%Creo le due matrici per definire il numero di blocchi da 20x20 necessari per le righe e le colonne,
 %da passare a mat2cell
 dimXblock = ones(floor(numXblocks),1)*20;
 dimYblock = ones(1,floor(numYblocks))*20;
@@ -40,14 +40,14 @@ ImageBlocks_v = ImageBlocks';
 ImageBlocks_v = ImageBlocks_v(:);
 
 % Creazione ground truth per la suddivisione in regioni
-for i=1:size(ImageBlocks_v,1)    
-    ImageBlocks_v{i} = (ImageBlocks_v{i}.*0)+i;        
+for i=1:size(ImageBlocks_v,1)
+    ImageBlocks_v{i} = (ImageBlocks_v{i}.*0)+i;
 end
 
 % Restituire numero di regioni create
 numregioni = size(ImageBlocks_v,1);
 
-% Ricostruzione dell'immagine partendo dal vettore trasposto (inversione delle dimensioni iniziali di partenza) 
+% Ricostruzione dell'immagine partendo dal vettore trasposto (inversione delle dimensioni iniziali di partenza)
 ImageBlocks_v = reshape(ImageBlocks_v,[size(ImageBlocks,2),size(ImageBlocks,1)]);
 
 % Trasposizione dell'immagine per riportarla alle dimensioni originali

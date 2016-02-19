@@ -15,64 +15,64 @@ while(true)
     seed = mean(affini(:,1:6),1);
     
     %Ad ogni iterazione, aggiungo un nuovo cluster
-    num_clust = num_clust+1; 
+    num_clust = num_clust+1;
     
     while(true)
         
         % Incremento contatore numero di iterazioni
         num_iterazioni = num_iterazioni+1;
-                      
+        
         % Calcolo distanza euclidea tra i punti
         %vettore seed e valori vettori parametri affini
         if(exist('dist','var'))
-               clearvars dist; 
+            clearvars dist;
         end
         
         dist = sqrt(sum(((affini(:,1:6) - repmat(seed,[size(affini,1),1,1])).^2),2));
-                       
-       % Calcolo distanza minima tra regioni e nuovo seed
-       dist_bw = sqrt((sum(sum((affini(:,1:6) - repmat(seed,[size(affini,1),1,1])).^2,2),1))/size(affini,1));
-                    
+        
+        % Calcolo distanza minima tra regioni e nuovo seed
+        dist_bw = sqrt((sum(sum((affini(:,1:6) - repmat(seed,[size(affini,1),1,1])).^2,2),1))/size(affini,1));
+        
         % Controllo che i valori siano nell'ampiezza di banda di interesse
         if(exist('valori_ok','var'))
-               clearvars  valori_ok; 
+            clearvars  valori_ok;
         end
         
         valori_ok = dist<dist_bw;
- 
-     
+        
+        
         % Aggiorno il seed
         newSeed = mean(affini(valori_ok, 1:6));
         
         
-%         p1NewSeed = mean(affiniX(valori_ok,1:3),1);
-%         p2NewSeed = mean(affiniY(valori_ok,1:3),1);
-            
-                        
+        %         p1NewSeed = mean(affiniX(valori_ok,1:3),1);
+        %         p2NewSeed = mean(affiniY(valori_ok,1:3),1);
+        
+        
         % Controllo che il valore sia un numero
         if (any(isnan(newSeed(:))))
             num_iterazioni = 0;
             break;
         end
         
-%         if (any(isnan(p1NewSeed(:)))  || any(isnan(p2NewSeed(:))))
-%             num_iterazioni = 0;
-%             break;
-%         end
-            
-             
+        %         if (any(isnan(p1NewSeed(:)))  || any(isnan(p2NewSeed(:))))
+        %             num_iterazioni = 0;
+        %             break;
+        %         end
+        
+        
         % Controllo se sono a convergenza, oppure se ho raggiunto numero
         % massimo iterazioni
-         if (isequal(seed,newSeed)|| num_iterazioni>10 )
+        if (isequal(seed,newSeed)|| num_iterazioni>10 )
             
             % Azzero contatore
             num_iterazioni=0;
             
             affini(valori_ok,:) = [];
-          
-                       
+            
+            
             % Salvo il valore del centro del cluster trovato
-            centri_cluster(num_clust,:) = newSeed; 
+            centri_cluster(num_clust,:) = newSeed;
             
             
             %Esco dal ciclo
@@ -80,44 +80,44 @@ while(true)
             
         end
         
-%         if ((isequal(p1Seed,p1NewSeed) && isequal(p2Seed,p2NewSeed)) || num_iterazioni>10 )
-%             
-%             % Azzero contatore
-%             num_iterazioni=0;
-%             
-%             affiniX(valori_ok,:) = [];
-%             affiniY(valori_ok,:) = [];
-%           
-%                        
-%             % Salvo il valore del centro del cluster trovato
-%             centri_cluster_p1(num_clust,:) = p1NewSeed; 
-%             centri_cluster_p2(num_clust,:) = p2NewSeed;
-%             
-%             %Esco dal ciclo
-%             break;
-%             
-%         end
+        %         if ((isequal(p1Seed,p1NewSeed) && isequal(p2Seed,p2NewSeed)) || num_iterazioni>10 )
+        %
+        %             % Azzero contatore
+        %             num_iterazioni=0;
+        %
+        %             affiniX(valori_ok,:) = [];
+        %             affiniY(valori_ok,:) = [];
+        %
+        %
+        %             % Salvo il valore del centro del cluster trovato
+        %             centri_cluster_p1(num_clust,:) = p1NewSeed;
+        %             centri_cluster_p2(num_clust,:) = p2NewSeed;
+        %
+        %             %Esco dal ciclo
+        %             break;
+        %
+        %         end
         
         
         %Aggiorno il valore del seed per la prossima iterazione
         seed= newSeed;
         
-%         p1Seed = p1NewSeed;
-%         p2Seed = p2NewSeed;
-       
+        %         p1Seed = p1NewSeed;
+        %         p2Seed = p2NewSeed;
+        
         
     end
     
     
-       % Controllo se tutti i punti sono stati assegnati, oppure se ho
+    % Controllo se tutti i punti sono stati assegnati, oppure se ho
     % raggiunto numero massimo di cluster
-     if isempty(affini) || num_clust>9
-       break;
+    if isempty(affini) || num_clust>9
+        break;
     end
     
-%     if isempty(affiniX) || num_clust>9
-%        break;
-%     end
+    %     if isempty(affiniX) || num_clust>9
+    %        break;
+    %     end
     
 end
 
