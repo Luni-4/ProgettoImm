@@ -1,30 +1,36 @@
-% Calcolo dei parametri affini e dei flussi ottici stimati per ogni regione
 function [Axi, Ayi,uStimato, vStimato ] = affine(uReg,vReg,xt,yt)
 
-%Regressore trasposto
-regressorT=[ones(numel(xt),1) xt yt];
-% Regressore
-regressor=regressorT';
-% Somma del prodotto matriciale tra regressore e regressore trasposto
-sumr=regressor(1:3,:)*regressorT(:,1:3);
-% Somma del prodotto matriciale tra regressore e flusso ottico lungo
-% le x
-sumvx=regressor(1:3,:)*uReg;
-% Somma del prodotto matriciale tra regressore e flusso ottico lungo le
-% y
-sumvy=regressor(1:3,:)*vReg;
-
-% Risoluzione del sistema Ax=b per i parametri affini dei flussi ottici lungo le x
-Axi=sumr\sumvx;
-% Risoluzione del sistema Ax=b per i parametri affini dei flussi ottici lungo le y
-Ayi=sumr\sumvy;
-
-%Se si vogliono usare le pseudo inverse
-%Axi = pinv(sumr)*sumvx; %parametri affini flussi ottici lungo le x
-% Ayi = pinv(sumr)*sumvy; %parametri affini flussi ottici lungo le y
-
-
-uStimato = regressorT(:,1:3)*Axi; %Calcolo dei flussi ottici stimati lungo le x
-vStimato = regressorT(:,1:3)*Ayi; %Calcolo dei flussi ottici stimati lungo le y
-
+    % Funzione che, per ogni regione/layer di movimento trovato, calcola i 6 parametri affini,
+    % 3 per le x e 3 per le y, e i flussi ottici stimati a partire dai parametri affini calcolati
+    
+    % Regressore trasposto [1 x y]
+    regressorT=[ones(numel(xt),1) xt yt];
+    
+    % Regressore
+    regressor=regressorT';
+    
+    % Somma del prodotto matriciale tra regressore e regressore trasposto 
+    sumr=regressor(1:3,:)*regressorT(:,1:3);
+    
+    % Somma del prodotto matriciale tra regressore e flusso ottico per
+    % le x
+    sumvx=regressor(1:3,:)*uReg;
+    
+    % Somma del prodotto matriciale tra regressore e flusso ottico per le
+    % y
+    sumvy=regressor(1:3,:)*vReg;
+    
+    % Risoluzione del sistema Ax=b, vengono trovati i 3 parametri affini delle x
+    Axi=sumr\sumvx;  
+    
+    % Risoluzione del sistema Ax=b, vengono trovati i 3 parametri affini
+    % delle y
+    Ayi=sumr\sumvy;      
+    
+    %Calcolo dei flussi ottici stimati per le x
+    uStimato = regressorT(:,1:3)*Axi;
+    
+    %Calcolo dei flussi ottici stimati per le y  
+    vStimato = regressorT(:,1:3)*Ayi;  
+        
 end
