@@ -119,10 +119,9 @@ while hasFrame(video)
     flow = estimateFlow(opticFlow, frameGrayCurrent);
     
     % Possibilità di stampare il flusso ottico per ogni iterazione
-    %         figure(1); imshow(frameGrayCurrent,[]); figure(1);
-    %         subplot(5,5,frame); flows =
-    %         opticalFlow(flipud(flow.Vx),flipud(flow.Vy)); plot(flows,
-    %         'DecimationFactor',[1 1],'ScaleFactor', 1);
+           figure(1);
+           subplot(5,5,frame); 
+           flows = opticalFlow(flipud(flow.Vx),flipud(flow.Vy)); plot(flows,'DecimationFactor',[1 1],'ScaleFactor', 1);
     
     % Se si è alla prima iterazione, regioniIn è un array vuoto, perché
     % funzione AffineMotion non è stata ancora mai invocata.
