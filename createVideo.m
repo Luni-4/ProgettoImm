@@ -22,12 +22,6 @@ if ~iscell(imgnames)
     error('Inserire delle immagini');
 end
 
-% Se non esiste la directory per il
-%salvataggio del video, crearla
-if ~exist(['videos/', filename],'dir')
-    mkdir(['videos/',filename]);
-end
-
 % Creazione del video, specificando filename e formato di compressione
 video = VideoWriter(['videos/',filename],'Uncompressed AVI');
 
