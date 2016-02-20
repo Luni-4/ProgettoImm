@@ -31,22 +31,27 @@ end
 [pathstr,name,ext] = fileparts(filename);
 
 % Vengono chiesti all'utente l'inserimento di due parametri di threshold,
-% thLK e thClustering, entrambe fortemente dipendenti dal video in
-% ingresso. La prima indica la soglia oltre la quale i valori trovati dal
-% Lukas-Kanade vengono eliminati, al fine di non considerare il rumore
-% introdotto da possibili movimenti della camera in fase di registrazione.
-% La seconda viene utilizzata in fase di clustering dei parametri affini,
-% ed indica la minima distanza che due coppie di parametri affini devono
-% avere, per essere inseriti in un determinato cluster. 
+% thLK e thClustering, entrambe fortemente dipendenti dal video in ingresso. La
+% prima indica la soglia oltre la quale i valori trovati dal lukas kanade
+% vengono eliminati, al fine di non considerare il rumore introdotto da
+% possibili movimenti della camera in fase di registrazione. La seconda
+% viene utilizzata in fase di clustering dei parametri affini, ed indica la minima distanza che due coppie di parametri affini devono avere per essere inseriti in un determinato cl 
 % Fare riferimento a tabella documentazione per valori consigliati
-thLK = input('\nInserire il parametro di treshold per Lucas-Kanade\n1');
-thClustering = input('\nInserire il parametro di treshold per Threshold-Based Clustering\n');
-
-if  not(thLK>0) || not(thClustering>0)
-    error('Inserire dei valori maggiori di 0.')
-end
-
-disp('Il programma è in esecuzione, attendere.')
+% thLK = input('Inserire il parametro di treshold per Lucas-Kanade\n(Per valori consigliati fare riferimeno tabella documentazione.)\n');
+%
+% if thLK>0
+%
+% else
+%     error('Inserire un valore maggiore di 0.')
+% end
+%
+% thKmeans = input('Inserire il parametro di treshold per Lucas-Kanade\n(Per valori consigliati fare riferimeno tabella documentazione.)\n');
+%
+% if thKmeans>0
+%
+% else
+%     error('Inserire un valore maggiore di 0.')
+% end
 
 
 % Apertura del file video in lettura
@@ -55,8 +60,10 @@ video = VideoReader([pathname,filename]);
 % opticFlow definisce la struttura usata per il calcolo del flusso ottico
 % usando il metodo Lucas-Kanadae Viene impostata una soglia di noise per
 % evitare di considerare piccoli movimenti, non esistenti nelle coppie di
-% frame analizzate, ma introdotti dal noise.
-opticFlow = opticalFlowLK('NoiseThreshold',thLK);
+% frame analizzate, ma introdotti dal noise. Questa soglia viene inserita
+% dall'utente, poiché dipende fortemente dalla quantità di rumore presente
+% nel video in questione
+opticFlow = opticalFlowLK('NoiseThreshold',0.0001);
 
 % Lettura primo frame viclearene posta fuori dal ciclo per evitare che
 % AffineMotion calcoli layer tra primo frame e frame precedente (immagine
@@ -81,7 +88,7 @@ prima = true;
 % Contatore frame
 frame = 1;
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%
 % Scrittura file di report, per testing, da disattivare in versione finale
 % Se non esiste file .txt, lo creo
 if ~exist(['output/', name,'/report.txt'],'file')
@@ -89,9 +96,9 @@ if ~exist(['output/', name,'/report.txt'],'file')
 end
     
 fid = fopen(['output/', name,'/report.txt'],'at');
-fprintf(fid, 'TITOLO VIDEO: %s\n\nThreshold Lucas_kanade: %f\nThreshold Clustering: %f',name,thLK,thClustering );
+fprintf(fid, 'TITOLO VIDEO: %s',name);
 fclose(fid);
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%
 
 % Ciclare finché non ci sono più frame disponibili
 while hasFrame(video)
@@ -122,16 +129,16 @@ while hasFrame(video)
         
     end
     
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
+%%%%%%%%%%  
  % Scrittura file di report, per testing, da disattivare in versione finale
     fid = fopen(['output/', name,'/report.txt'],'at');
     fprintf(fid, '\n\nFrame: %s-%s\n', num2str(frame), num2str(frame+1));
     fclose(fid);
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%
     
     
     % Calcolo dei layer di movimento per ciascuna coppia di frame della
-    % sequenza invocando AffineMotion. La funzione restituisce i layer di
+    % sequenza invocando AffineMotion La funzione restituisce i layer di
     % movimento calcolati per la coppia di frame considerata, contenuti in
     % regioniOut, e i layer di movimento, a cui sono stati tolti i pixel
     % con un errore troppo elevato, contenuti in regioniIn. Vengono
@@ -140,7 +147,7 @@ while hasFrame(video)
     % trovati all'iterazione precedente. Usando la variabile regioniIn si
     % garantisce una maggiore affidabilità nel calcolo dei layer di
     % movimento e un riduzione del costo computazionale.
-    [regioniOut, regioniIn] = AffineMotion(flow.Vx, flow.Vy, prima, regioniIn,thClustering,name); %da togliere name in finale
+    [regioniOut, regioniIn] = AffineMotion(flow.Vx, flow.Vy, prima, regioniIn,thCluster,name); %da togliere name in finale
     
     
     % Se non esiste la directory per il
@@ -170,12 +177,12 @@ while hasFrame(video)
     beep;
 end
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%
 % Scrittura file di report, per testing, da disattivare in versione finale
     fid = fopen(['output/', name,'/report.txt'],'at');
     fprintf(fid, '----------\n\n\n');
     fclose(fid);
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%
 
 % Segnale sonoro che identifica la fine dell'esecuzione del processo
 beep;

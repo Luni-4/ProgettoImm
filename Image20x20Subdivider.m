@@ -1,5 +1,6 @@
 function [regioni, numregioni] = Image20x20Subdivider(img)
-%% Funzione per la suddivisione dell'immagine di partenza in blocchi 20x20
+
+% Funzione per la suddivisione dell'immagine di partenza in blocchi 20x20
 
 %Recupero dimensioni dell'immagine da analizzare
 [sizeX, sizeY] = size(img);
