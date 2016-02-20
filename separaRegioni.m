@@ -1,5 +1,8 @@
 function nuoveRegioni = separaRegioni(vecchieRegioni)
-%Separa le regioni non adiacenti, e restituisce immagine con nuove label
+
+% Funzione per la separazione delle regioni tra loro non connesse, che
+% restituisce una nuova immagine formata dalle nuove regioni separate e con
+% nuove lable.
 
 % Definizione di matrice che conterrà nuove regioni
 nuoveRegioni = zeros(size(vecchieRegioni));
@@ -7,14 +10,17 @@ nuoveRegioni = zeros(size(vecchieRegioni));
 %Contatore regioni
 nRegioni = 1;
 
-% Trovare regioni
+% Trovare regioni esistenti prima della loro separazione se non connesse.
 reg = unique(vecchieRegioni);
 
-% Eliminare regione contenente pixel scartati da analisi
+% Il layer formato da tutti i pixel aventi errore residuo troppo alto non
+% viene considerato
 reg=reg(2:size(reg,1));
 
+% Scorrimento di tutti i layer trovati 
 for i=1:numel(reg)
     
+    % Ogni layer viene suddiviso da bwlable
     label = bwlabel(vecchieRegioni == reg(i));
     
     % Trovare sottoregioni

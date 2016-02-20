@@ -153,8 +153,7 @@ while (true)
     %%%%%%%%%%
     
     
-    % Incremento contatore del numero di iterazioni fatte dal ciclo while
-    % per individuare tutti i possibili layer di movimento
+    % Incremento Contatore
     iterazione = iterazione +1;
     
     
