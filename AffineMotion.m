@@ -1,4 +1,4 @@
-function [regioniOut,regioniErr] =  AffineMotion(u,v, prima, regioniIn,thCluster,name)
+function [regioniOut,regioniErr] =  AffineMotion(u,v, prima, regioniIn,thCluster,regioniOut,name)
 
 % Funzione che identifica i diversi layer di movimento per ciascuna coppia
 % di frame presenti nella sequenza video. Nei commenti relativi a questa
@@ -54,6 +54,7 @@ while (true)
     % Il ciclo itera sui layer di movimento/regioni calcolando le ipotesi
     % di movimento con i relativi parametri affini
     for i=1:numregioni
+        
         % Per ogni regione/layer di movimento vengono salvati gli indici
         % delle righe nell'array xt e quelli delle colonne in yt
         [xt,yt]=find(regioni == i);
@@ -74,6 +75,7 @@ while (true)
             affini(i, 4:6) = Ayi'; % Salvataggio dei parametri affini per le y
             affini(i,7) = i; % Salvataggio della regione/layer di movimento a cui sono associati
         end
+        
     end
     
     
@@ -95,13 +97,21 @@ while (true)
     % dell'immagine finale, nonché il costo computazionale. Per valori
     % consigliati, fare riferimento alla tabella  alla fine della
     % documentazione.
-    [cc] = thresholdClustering(affini,thCluster);
+    [cc] = thresholdClustering(affini,thCluster);    
     
     
     % Assegnameno regioni a cluster più vicino. La funzione associa ogni
     % pixel al cluster avente centro con parametri affini più simili ai
     % parametri affini del pixel in questione.
     [regioni,distanza] = assegnaCluster(u,v,cc,regioni);
+    
+    % Se assegnaCluster restituisce un'unica regione, per le coppie di
+    % frame successive alla prima, restituire layer di movimento precedenti
+    % e interrompere il ciclo
+    if numel(unique(regioni)) == 1
+        regioni = regioniOut;
+        break;
+    end
     
     
     
@@ -155,7 +165,7 @@ while (true)
     
     % Incremento contatore del numero di iterazioni fatte dal ciclo while
     % per individuare tutti i possibili layer di movimento
-    iterazione = iterazione +1;
+    iterazione = iterazione +1;    
     
     
 end % Fine iterazioni singolo frame

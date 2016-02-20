@@ -4,7 +4,7 @@ function [cc] = thresholdClustering(affini,th)
 % in maniera automatica il numero di cluster necessari. Nell'algoritmo di
 % clustering basato su soglie, il numero di cluster è sconosciuto.
 % Tuttavia, due elementi sono assegnati allo stesso cluster se la distanza
-% tra di loro è sotto di una determinata soglia specificata th. Questo
+% tra di loro è sotto di una determinata soglia specificata, chiamata th. Questo
 % algoritmo viene applicato allo spazio a 6 dimensioni definiti dai set di
 % parametri affini, in modo da raggruppare regioni aventi movimenti simili.
 
@@ -43,12 +43,12 @@ while(true)
     
     % Ogni set viene assegnato al centro più vicino. La variabile
     % distanzaMin contiene le distanze di ogni set dal centro a loro più
-    % vicino, mentre in newRegioni otteniamo una matrice, in cui ad ogni
+    % vicino, mentre in newRegioni otteniamo una matrice, in cui ogni
     % set di parametri affini è stato assegnato al centro più vicino
     [distanzaMin,newRegioni] = min(dist,[],3);
     
     % Variabile booleana utilizzata per controllare quali distanzeMin
-    % calcolate precedentemente rispettano la condzione di distanza minima
+    % calcolate precedentemente rispettano la condizione di distanza minima
     % definita da th
     valori_ok = distanzaMin<=th;
     
@@ -118,7 +118,7 @@ while(true)
         % Distanza tra cluster, rappresentata attraverso matrice
         % triangolare. La funzione permute riordina i centri trovati, in
         % modo che centri diversi siano messi in righe diverse. Viene poi
-        % calcolata la distanza tra i vari centri, ceh sono resituiti nella
+        % calcolata la distanza tra i vari centri, che sono resituiti nella
         % matrice distC.
         distC =  squareform(pdist(permute(centri,[3,2,1])));
         

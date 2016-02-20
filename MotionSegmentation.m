@@ -42,6 +42,8 @@ end
 thLK = input('\nInserire il parametro di treshold per Lucas-Kanade\n1');
 thClustering = input('\nInserire il parametro di treshold per Threshold-Based Clustering\n');
 
+% Se utente non inserisce soglie positive e maggiori di, viene invocato
+% errore
 if  not(thLK>0) || not(thClustering>0)
     error('Inserire dei valori maggiori di 0.')
 end
@@ -53,14 +55,15 @@ disp('Il programma è in esecuzione, attendere.')
 video = VideoReader([pathname,filename]);
 
 % opticFlow definisce la struttura usata per il calcolo del flusso ottico
-% usando il metodo Lucas-Kanadae Viene impostata una soglia di noise per
+% usando il metodo Lucas-Kanadae. Viene impostata una soglia di noise per
 % evitare di considerare piccoli movimenti, non esistenti nelle coppie di
-% frame analizzate, ma introdotti dal noise.
+% frame analizzate, ma introdotti dal noise stesso.
 opticFlow = opticalFlowLK('NoiseThreshold',thLK);
 
-% Lettura primo frame viclearene posta fuori dal ciclo per evitare che
+% La lettura del primo frame viene posta fuori dal ciclo per evitare che
 % AffineMotion calcoli layer tra primo frame e frame precedente (immagine
-% nera) aggiunta da implementazione del Lucas-Kanadae
+% nera). Questo tipo di algoritmo è dovuto ad una scelta degli
+% implementatori del Lucas-Kanadae di Matlab.
 
 % Lettura del primo frame del video
 frameRGBCurrent = readFrame(video);
@@ -118,8 +121,7 @@ while hasFrame(video)
     % Se si è alla prima iterazione, regioniIn è un array vuoto, perché
     % funzione AffineMotion non è stata ancora mai invocata.
     if prima == true;
-        regioniIn = [];
-        
+        regioniIn = [];        
     end
     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
@@ -139,8 +141,10 @@ while hasFrame(video)
     % e le y, la variabile prima e i layer di movimento di regioniIn
     % trovati all'iterazione precedente. Usando la variabile regioniIn si
     % garantisce una maggiore affidabilità nel calcolo dei layer di
-    % movimento e un riduzione del costo computazionale.
-    [regioniOut, regioniIn] = AffineMotion(flow.Vx, flow.Vy, prima, regioniIn,thClustering,name); %da togliere name in finale
+    % movimento e un riduzione del costo computazionale. Usando la variabile
+    % regioniOut si evitano casi limiti a fronte di movimenti, tra le coppie
+    % di frame, troppo piccoli, portando la funzione a generare un unico layer di movimento.
+    [regioniOut, regioniIn] = AffineMotion(flow.Vx, flow.Vy, prima, regioniIn,thClustering,regioniOut,name); %da togliere name in finale
     
     
     % Se non esiste la directory per il
