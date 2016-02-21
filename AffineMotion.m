@@ -70,7 +70,13 @@ while (true)
         % Funzione che calcola errore residuo, se valore restituito è pari
         % a 1, i parametri affini calcolati vengono salvati con relativa
         % regione/ layer di movimento alla quale sono associati
-        if errorStima(u(regioni==i),v(regioni==i),uS,vS,threshold) == 1
+        if prima == true
+            if errorStima(u(regioni==i),v(regioni==i),uS,vS,threshold) == 1
+                affini(i, 1:3) = Axi';  % Salvataggio dei parametri affini per le x
+                affini(i, 4:6) = Ayi'; % Salvataggio dei parametri affini per le y
+                affini(i,7) = i; % Salvataggio della regione/layer di movimento a cui sono associati
+            end
+        else
             affini(i, 1:3) = Axi';  % Salvataggio dei parametri affini per le x
             affini(i, 4:6) = Ayi'; % Salvataggio dei parametri affini per le y
             affini(i,7) = i; % Salvataggio della regione/layer di movimento a cui sono associati
@@ -81,7 +87,9 @@ while (true)
     
     %Eliminazione dall'array affini i parametri affini che non hanno
     %superato la soglia di threshold
-    affini((affini(:,7) ==0),:) = [];
+    if prima == true 
+        affini((affini(:,7) ==0),:) = [];
+    end
     
     
     
