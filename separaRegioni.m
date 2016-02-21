@@ -1,16 +1,16 @@
 function nuoveRegioni = separaRegioni(vecchieRegioni)
 
-% Funzione per la separazione delle regioni tra loro non connesse, che
-% restituisce una nuova immagine formata dalle nuove regioni separate e con
-% nuove lable.
+% Funzione usata per separare le regioni/layer di movimento tra loro non connessi. Restituisce 
+% una nuova immagine, contentente le regioni/layer di movimento che sono
+% stati separati, assegnado a ciascuno di loro nuove label
 
-% Definizione di matrice che conterrà nuove regioni
+% Definizione della matrice che conterrà i nuovi layer
 nuoveRegioni = zeros(size(vecchieRegioni));
 
-%Contatore regioni
+% Contatore layer
 nRegioni = 1;
 
-% Trovare regioni esistenti prima della loro separazione se non connesse.
+% Trovare layer esistenti prima della loro separazione.
 reg = unique(vecchieRegioni);
 
 % Il layer formato da tutti i pixel aventi errore residuo troppo alto non
@@ -26,15 +26,15 @@ for i=1:numel(reg)
     % Trovare sottoregioni
     reg1 = unique(label);
     
-    % Eliminare sottoregione contenente pixel di altre regioni
+    % Eliminare sottoregione composta dai pixel degli altri layer
     reg1=reg1(2:size(reg1,1));
     
     for k=1:numel(reg1)
-        % Inserire le regioni separate come nuove regioni
+        % Inserire i layer che sono stati separati come nuovi layer
         nuoveRegioni(label == reg1(k)) = nRegioni;
         
         % Aumentare contatore
-        nRegioni = nRegioni+1;
+        nRegioni = nRegioni + 1;
     end
     
 end

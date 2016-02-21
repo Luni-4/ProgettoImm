@@ -123,7 +123,7 @@ while hasFrame(video)
            subplot(5,5,frame); 
            flows = opticalFlow(flipud(flow.Vx),flipud(flow.Vy)); plot(flows,'DecimationFactor',[1 1],'ScaleFactor', 1);
     
-    % Se si è alla prima iterazione, regioniIn è un array vuoto, perché
+    % Se si è alla prima iterazione, regioniIn e regioniOut sono array vuoti, perché
     % funzione AffineMotion non è stata ancora mai invocata.
     if prima == true;
         regioniIn = []; 
@@ -148,8 +148,9 @@ while hasFrame(video)
     % trovati all'iterazione precedente. Usando la variabile regioniIn si
     % garantisce una maggiore affidabilità nel calcolo dei layer di
     % movimento e un riduzione del costo computazionale. Usando la variabile
-    % regioniOut si evitano casi limiti a fronte di movimenti, tra le coppie
-    % di frame, troppo piccoli, portando la funzione a generare un unico layer di movimento.
+    % regioniOut si evitano casi limiti, a fronte di movimenti troppo piccoli che generano un unico
+    % layer di movimento, tra le coppie di frame.
+
     [regioniOut, regioniIn] = AffineMotion(flow.Vx, flow.Vy, prima, regioniIn,thClustering,regioniOut,name); %da togliere name in finale
     
     
