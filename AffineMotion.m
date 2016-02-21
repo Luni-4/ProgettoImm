@@ -76,13 +76,11 @@ while (true)
                 affini(i, 4:6) = Ayi'; % Salvataggio dei parametri affini per le y
                 affini(i,7) = i; % Salvataggio della regione/layer di movimento a cui sono associati
             end
-<<<<<<< HEAD
         else
             affini(i, 1:3) = Axi';  % Salvataggio dei parametri affini per le x
             affini(i, 4:6) = Ayi'; % Salvataggio dei parametri affini per le y
             affini(i,7) = i; % Salvataggio della regione/layer di movimento a cui sono associati
-=======
->>>>>>> origin/master
+
         end
         
     end
@@ -90,16 +88,10 @@ while (true)
     
     %Eliminazione dall'array affini i parametri affini che non hanno
     %superato la soglia di threshold
-<<<<<<< HEAD
     if prima == true 
         affini((affini(:,7) ==0),:) = [];
-    end
-    
-=======
-    if prima == true
-    affini((affini(:,7) ==0),:) = [];
-    end
->>>>>>> origin/master
+    end    
+
     
     
     % Raggruppamento in cluster di regioni aventi parametri affini simili,
