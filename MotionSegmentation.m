@@ -119,9 +119,9 @@ while hasFrame(video)
     flow = estimateFlow(opticFlow, frameGrayCurrent);
     
     % Possibilità di stampare il flusso ottico per ogni iterazione
-           figure(1);
-           subplot(5,5,frame); 
-           flows = opticalFlow(flipud(flow.Vx),flipud(flow.Vy)); plot(flows,'DecimationFactor',[1 1],'ScaleFactor', 1);
+%            figure(1);
+%            subplot(5,5,frame); 
+%            flows = opticalFlow(flipud(flow.Vx),flipud(flow.Vy)); plot(flows,'DecimationFactor',[1 1],'ScaleFactor', 1);
     
     % Se si è alla prima iterazione, regioniIn e regioniOut sono array vuoti, perché
     % funzione AffineMotion non è stata ancora mai invocata.
@@ -162,7 +162,7 @@ while hasFrame(video)
     
     % I layer di movimento vengono normalizzati (livellì di intensità
     % compresi tra 0 e 1).
-    regioniNorm =regioniOut/max(abs(regioniOut(:)));
+    regioniNorm =regioniOut/max((regioniOut(:)));
     
     % Ad ogni iterazione, vengono salvate le immagini in formato png
     % contenenti i layer di movimento, per ciascuna coppia di frame
