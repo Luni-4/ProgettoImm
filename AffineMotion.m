@@ -70,10 +70,12 @@ while (true)
         % Funzione che calcola errore residuo, se valore restituito è pari
         % a 1, i parametri affini calcolati vengono salvati con relativa
         % regione/ layer di movimento alla quale sono associati
-        if errorStima(u(regioni==i),v(regioni==i),uS,vS,threshold) == 1
-            affini(i, 1:3) = Axi';  % Salvataggio dei parametri affini per le x
-            affini(i, 4:6) = Ayi'; % Salvataggio dei parametri affini per le y
-            affini(i,7) = i; % Salvataggio della regione/layer di movimento a cui sono associati
+        if prima == true
+            if errorStima(u(regioni==i),v(regioni==i),uS,vS,threshold) == 1
+                affini(i, 1:3) = Axi';  % Salvataggio dei parametri affini per le x
+                affini(i, 4:6) = Ayi'; % Salvataggio dei parametri affini per le y
+                affini(i,7) = i; % Salvataggio della regione/layer di movimento a cui sono associati
+            end
         end
         
     end
@@ -81,8 +83,9 @@ while (true)
     
     %Eliminazione dall'array affini i parametri affini che non hanno
     %superato la soglia di threshold
+    if prima == true
     affini((affini(:,7) ==0),:) = [];
-    
+    end
     
     
     % Raggruppamento in cluster di regioni aventi parametri affini simili,
@@ -108,12 +111,15 @@ while (true)
     % Se assegnaCluster restituisce un'unica regione, per le coppie di
     % frame successive alla prima, restituire layer di movimento precedenti
     % e interrompere il ciclo
-    if numel(unique(regioni)) == 1
+    if numel(unique(regioni)) == 1 && prima == false
         regioni = regioniOut;
         regioniErr = regioni;
         %%%%%%%%%%
         %Scrittura file di report, per testing, da disattivare in versione
         %finale
+        if ~exist('t','var')
+            t = 0;
+        end
         fid = fopen(['output/', name,'/report.txt'],'at');
         fprintf(fid, 'Numero Cluster: %s, durata iterazione: %s. \n', num2str(numregioni), num2str(t));
         fclose(fid);
@@ -128,9 +134,9 @@ while (true)
     % ha dato risultati migliori. I pixel scartati vengono salvati in
     % regioniErr venendo tutti posti a 0,  andando a formare un layer
     % speciale.
-    thErr= 1;
-    regioniErr = residualError(regioni,distanza,thErr);
-    
+        thErr= 1;
+        regioniErr = residualError(regioni,distanza,thErr);
+
     
     % Controllo sul numero delle iterazioni del calcolo affine motion I
     % valori max di iterazioni sono trovati euristicamente
