@@ -69,7 +69,8 @@ while (true)
         
         % Funzione che calcola errore residuo, se valore restituito è pari
         % a 1, i parametri affini calcolati vengono salvati con relativa
-        % regione/ layer di movimento alla quale sono associati
+        % regione/ layer di movimento alla quale sono associati. Questo controllo viene effettuato
+        %solo alla prima iterazione della prima coppia di frame.
         if prima == true
             if errorStima(u(regioni==i),v(regioni==i),uS,vS,threshold) == 1
                 affini(i, 1:3) = Axi';  % Salvataggio dei parametri affini per le x
@@ -128,9 +129,7 @@ while (true)
     
     % Controllo sul numero delle iterazioni del calcolo affine motion. I
     % valori max di iterazioni sono trovati euristicamente
-    if (iterazione > 5)
-        t = toc;
-        disp(['Iterazione ',num2str(iterazione), ' ok, durata iterazione = ',num2str(t),'.']);
+    if (iterazione > 5)               
         break;
     end
     
