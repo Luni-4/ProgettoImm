@@ -84,24 +84,6 @@ prima = true;
 % Contatore frame
 frame = 1;
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Scrittura file di report, per testing, da disattivare in versione finale
-% Se non esiste la directory per il
-%salvataggio dei layer di movimento, crearla
-if ~exist(['output/', name],'dir')
-    mkdir(['output/',name]);
-end
-
-% Se non esiste file .txt, lo creo
-if ~exist(['output/', name,'/report.txt'],'file')
-    fclose(fopen(['output/', name,'/report.txt'], 'w'));
-end
-
-fid = fopen(['output/', name,'/report.txt'],'at');
-fprintf(fid, 'TITOLO VIDEO: %s\n\nThreshold Lucas_kanade: %f\nThreshold Clustering: %f',name,thLK,thClustering );
-fclose(fid);
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 % Ciclare finché non ci sono più frame disponibili
 while hasFrame(video)
     
@@ -127,16 +109,10 @@ while hasFrame(video)
     % funzione AffineMotion non è stata ancora mai invocata.
     if prima == true;
         regioniIn = []; 
-        regioniOut = [];
     end
     
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
- % Scrittura file di report, per testing, da disattivare in versione finale
-    fid = fopen(['output/', name,'/report.txt'],'at');
-    fprintf(fid, '\n\nFrame: %s-%s\n', num2str(frame), num2str(frame+1));
-    fclose(fid);
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
+    % Viene mostrato all'utente quali siano i frame soggetti ad analisi
+    disp(['Frame ',num2str(frame), '-',num2str(frame+1),'.']);
     
     % Calcolo dei layer di movimento per ciascuna coppia di frame della
     % sequenza invocando AffineMotion. La funzione restituisce i layer di
@@ -147,11 +123,8 @@ while hasFrame(video)
     % e le y, la variabile prima e i layer di movimento di regioniIn
     % trovati all'iterazione precedente. Usando la variabile regioniIn si
     % garantisce una maggiore affidabilità nel calcolo dei layer di
-    % movimento e un riduzione del costo computazionale. Usando la variabile
-    % regioniOut si evitano casi limiti, a fronte di movimenti troppo piccoli che generano un unico
-    % layer di movimento, tra le coppie di frame.
-
-    [regioniOut, regioniIn] = AffineMotion(flow.Vx, flow.Vy, prima, regioniIn,thClustering,regioniOut,name); %da togliere name in finale
+    % movimento e un riduzione del costo computazionale. 
+    [regioniOut, regioniIn] = AffineMotion(flow.Vx, flow.Vy, prima, regioniIn,thClustering);
     
     
     % Se non esiste la directory per il
@@ -181,12 +154,6 @@ while hasFrame(video)
     beep;
 end
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Scrittura file di report, per testing, da disattivare in versione finale
-    fid = fopen(['output/', name,'/report.txt'],'at');
-    fprintf(fid, '----------\n\n\n');
-    fclose(fid);
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Segnale sonoro che identifica la fine dell'esecuzione del processo
 beep;

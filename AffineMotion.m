@@ -1,4 +1,4 @@
-function [regioniOut,regioniErr] =  AffineMotion(u,v, prima, regioniIn,thCluster,regioniOut,name)
+function [regioniOut,regioniErr] =  AffineMotion(u,v, prima, regioniIn,thCluster)
 
 % Funzione che identifica i diversi layer di movimento per ciascuna coppia
 % di frame presenti nella sequenza video. Nei commenti relativi a questa
@@ -87,9 +87,11 @@ while (true)
     
     
     %Eliminazione dall'array affini i parametri affini che non hanno
-    %superato la soglia di threshold
+    %superato la soglia di threshold. Questo controllo viene effettuato
+    %solo alla prima iterazione della prima coppia di frame.
     if prima == true 
         affini((affini(:,7) ==0),:) = [];
+        prima = false;
     end    
 
     
@@ -112,27 +114,7 @@ while (true)
     % Assegnameno regioni a cluster più vicino. La funzione associa ogni
     % pixel al cluster avente centro con parametri affini più simili ai
     % parametri affini del pixel in questione.
-    [regioni,distanza] = assegnaCluster(u,v,cc,regioni);
-    
-    % Se assegnaCluster restituisce un'unica regione, per le coppie di
-    % frame successive alla prima, restituire layer di movimento precedenti
-    % e interrompere il ciclo
-    if numel(unique(regioni)) == 1 && prima == false
-        regioni = regioniOut;
-        regioniErr = regioni;
-        %%%%%%%%%%
-        %Scrittura file di report, per testing, da disattivare in versione
-        %finale
-        if ~exist('t','var')
-            t = 0;
-        end
-        fid = fopen(['output/', name,'/report.txt'],'at');
-        fprintf(fid, 'Numero Cluster: %s, durata iterazione: %s. \n', num2str(numregioni), num2str(t));
-        fclose(fid);
-        %%%%%%%%%%
-        break;
-    end
-    
+    [regioni,distanza] = assegnaCluster(u,v,cc,regioni);    
     
     
     % Eliminazione pixel con errore residuo troppo alto. thErr rappresenta
@@ -144,20 +126,11 @@ while (true)
         regioniErr = residualError(regioni,distanza,thErr);
 
     
-    % Controllo sul numero delle iterazioni del calcolo affine motion I
+    % Controllo sul numero delle iterazioni del calcolo affine motion. I
     % valori max di iterazioni sono trovati euristicamente
-    if (prima== true && iterazione > 5) || (prima== false && iterazione > 2)
+    if (iterazione > 5)
         t = toc;
         disp(['Iterazione ',num2str(iterazione), ' ok, durata iterazione = ',num2str(t),'.']);
-        
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        %Scrittura file di report, per testing, da disattivare in versione
-        %finale
-        fid = fopen(['output/', name,'/report.txt'],'at');
-        fprintf(fid, 'Numero Cluster: %s, durata iterazione: %s. \n', num2str(numel(unique(regioni))), num2str(t));
-        fclose(fid);
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        
         break;
     end
     
@@ -173,15 +146,6 @@ while (true)
     % ciclo while per ogni iterazione
     t = toc;
     disp(['Iterazione ',num2str(iterazione), ' ok, durata iterazione = ',num2str(t),'.']);
-    
-    %%%%%%%%%%
-    %Scrittura file di report, per testing, da disattivare in versione
-    %finale
-    fid = fopen(['output/', name,'/report.txt'],'at');
-    fprintf(fid, 'Numero Cluster: %s, durata iterazione: %s. \n', num2str(numregioni), num2str(t));
-    fclose(fid);
-    %%%%%%%%%%
-    
     
     % Incremento contatore del numero di iterazioni fatte dal ciclo while
     % per individuare tutti i possibili layer di movimento
