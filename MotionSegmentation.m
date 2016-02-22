@@ -129,8 +129,8 @@ while hasFrame(video)
     
     % Se non esiste la directory per il
     %salvataggio dei layer di movimento, crearla
-    if ~exist(['output/', filename],'dir')
-        mkdir(['output/',filename]);
+    if ~exist(['output/', name],'dir')
+        mkdir(['output/',name]);
     end
     
     % I layer di movimento vengono normalizzati (livellì di intensità
